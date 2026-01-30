@@ -10,7 +10,7 @@ const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="fixed top-0 bg-white/95 w-full backdrop-blur-sm shadow-sm z-50">
+    <header className="sticky top-0 bg-white/95 w-full backdrop-blur-sm shadow-sm z-50">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href={"/"}>
@@ -40,7 +40,7 @@ const Header = () => {
             )}
           </button>
           {isOpen && (
-            <div className="    fixed top-16 pt-10 pl-10 left-0 transition-all ease-in-out duration-500 w-48 bottom-0 h-screen bg-white/95 backdrop-blur-md shadow-md z-50   md:visible md:flex items-center space-x-8 flex-initial">
+            <div className="md:hidden    fixed top-16 pt-10 pl-10 left-0 transition-all ease-in-out duration-500 w-48 bottom-0 h-screen bg-white/95 backdrop-blur-md shadow-md z-50   items-center space-x-8 flex-initial">
               <nav className=" flex flex-col items-start space-y-8 ">
                 <Navbar />
               </nav>
