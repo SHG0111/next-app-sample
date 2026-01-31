@@ -1,0 +1,21 @@
+.card {
+  background: #fff;
+  color: #000;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 16px;
+  padding: 20px;
+  text-align: center;
+  width: 300px;
+  margin: 0 15px;
+  margin-top: 30px;
+  height: 335px;
+  border-radius: 5px;
+  overflow: hidden;
+  text-align: start;
+  margin-bottom: 20px;
+}
+.card .title {
+  text-transform: capitalize;
+  font-weight: bold;
+  margin: 10px 0;
+}
