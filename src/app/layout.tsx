@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header/Header";
 import Footer from "@/components/Footer";
+import Breadcrumb from "@/components/breadcrumb/page";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,10 +19,13 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-blue-50`}>
         <Header />
         <main className="container">
-          <div className="content pt-3">{children}</div>
+          <div className="content pt-3">
+            <Breadcrumb />
+            {children}
+          </div>
         </main>
         <Footer />
       </body>
