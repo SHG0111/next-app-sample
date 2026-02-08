@@ -1,6 +1,8 @@
-import Link from "next/link";
+"use client";
+import { useRouter } from "next/navigation";
 
 export default function NotFound() {
+  const router = useRouter();
   return (
     <div className="flex flex-col items-center justify-center min-h-[70vh] px-4">
       <div className="text-center">
@@ -12,12 +14,14 @@ export default function NotFound() {
           Sorry, the page you are looking for doesn &apos;t exist or has been
           moved to another URL.
         </p>
-        <Link
-          href="/"
+        <button
+          onClick={() => {
+            router.back();
+          }}
           className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors inline-block"
         >
           Return Home
-        </Link>
+        </button>
       </div>
     </div>
   );

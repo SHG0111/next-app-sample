@@ -4,33 +4,37 @@ import type { ProductType } from "@/types";
 import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import Error from "../error";
-import { fromUrlFormat } from "@/app/lib/urlFormatter";
+import Error from "@/app/products/error";
+import axios from "axios";
+import {
+  fromUrlFormat,
+  getCategoryFromUrl,
+  toUrlFormat,
+} from "@/app/lib/urlFormatter";
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
-const ProductDetail = ({ params }: { params: { id: string } }) => {
+const ProductDetail = ({
+  params,
+}: {
+  params: { id: number; category: string };
+}) => {
   const [product, setProduct] = useState<ProductType | null>(null);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function getProduct() {
-      try {
-        const res = await fetch(`${API_KEY}/products/${params.id}`);
-        if (!res.ok) {
-          setError(`Failed to fetch product: ${res.status}`);
-        }
-        const data = await res.json();
-        setProduct(data);
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
+  const getProduct = async () => {
+    try {
+      const res = await axios.get(`${API_KEY}/products/${params.id}`);
+      setProduct(res.data);
+      setLoading(false);
+    } catch {
+      setError("Failed to fetch product");
+      setLoading(false);
     }
+  };
+  useEffect(() => {
     getProduct();
-  }, [params.id]);
+  }, []);
 
   if (loading) return <div className="text-center py-10">Loading...</div>;
 

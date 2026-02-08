@@ -4,6 +4,7 @@ import type { ProductType } from "@/types/index";
 import { useEffect, useState } from "react";
 import Product from "@/app/products/Product";
 import Error from "./error";
+import axios from "axios";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 const Productspage = () => {
   const [post, setPost] = useState<ProductType[]>([]);
@@ -12,11 +13,9 @@ const Productspage = () => {
   useEffect(() => {
     async function getPosts() {
       try {
-        const res = await fetch(`${API_KEY}/products`);
-        if (!res.ok) {
-          setError(`Failed to fetch products: ${res.status}`);
-        }
-        const data = await res.json();
+        const res = await axios.get(`${API_KEY}/products`);
+
+        const data = await res.data;
         setPost(data);
       } catch (error) {
         setError(`Failed to fetch products: ${error}`);

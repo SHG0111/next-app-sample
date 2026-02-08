@@ -21,11 +21,13 @@ const Product = ({ item }: { item: ProductType }) => {
         <div
           className={`${styles.title} line-clamp-2 underline decoration-wavy decoration-cyan-400 hover:text-cyan-400 hover:no-underline  transition-all`}
         >
-          <Link href={`/products/${item.id}`}>{item.title}</Link>
+          <Link href={`/products/${toUrlFormat(item.category)}/${item.id}`}>
+            {item.title}
+          </Link>
         </div>
         <Link
           className={`${styles.category}  `}
-          href={`/products/category/${toUrlFormat(item.category)}`}
+          href={`/products/${toUrlFormat(item.category)}`}
         >
           <span
             className={`${
