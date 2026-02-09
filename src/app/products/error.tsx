@@ -23,16 +23,10 @@ export default function Error({
         {error.message || "An unexpected error occurred."}
       </p>
       <div className="flex ">
-        <button
-          onClick={() => reset()}
-          className="px-6 py-2 bg-blue-600 text-white mx-2 hover:bg-blue-700 transition-colors"
-        >
+        <button onClick={() => reset()} className="box-bg mx-2 ">
           Try again
         </button>
-        <button
-          onClick={() => router.back()}
-          className="px-6 py-2 bg-blue-600 text-white mx-2 hover:bg-blue-700 transition-colors"
-        >
+        <button onClick={() => router.back()} className="box-bg mx-2 ">
           go back
         </button>
       </div>

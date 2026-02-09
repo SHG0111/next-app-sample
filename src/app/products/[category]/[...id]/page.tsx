@@ -85,15 +85,13 @@ const ProductDetail = ({
           <div className="text-xl font-bold text-gray-900">
             ${product.price.toFixed(2)}
           </div>
-          <div className="border-t pt-4">
+          {/* <div className="border-t pt-4">
             <h2 className="text-lg font-semibold mb-2">Description</h2>
             <p className="text-blue-800/50 leading-relaxed">
               {product.description}
             </p>
-          </div>
-          <button className="mt-0 w-full bg-blue-600 text-white py-3  font-semibold hover:bg-blue-700 transition-colors">
-            Add to Cart
-          </button>
+          </div> */}
+          <button className="mt-0 w-full box-bg">Add to Cart</button>
         </div>
       </div>
     </div>

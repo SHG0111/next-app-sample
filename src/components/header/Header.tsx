@@ -48,21 +48,15 @@ const Header = () => {
           )}
 
           <div className="hidden md:flex items-center space-x-4">
-            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white">
+            <button className="px-4 py-2 ghost box">
               {" "}
-              <Link
-                href="/login"
-                className="txt-gray-700 hover:-text-blue-600 transition-colors capitalize"
-              >
+              <Link href="/login" className="relative z-10">
                 Login
               </Link>
             </button>
-            <button className="px-4 py-2 bg-blue-600 hover:bg-blue-800 text-white">
+            <button className="px-4 py-2 ghost box">
               {" "}
-              <Link
-                href="/login"
-                className="txt-gray-700 hover:-text-blue-600 transition-colors capitalize"
-              >
+              <Link href="/login" className="relative z-10">
                 register
               </Link>
             </button>

@@ -52,7 +52,7 @@ const DescriptionCell = ({ product }: { product: ProductType }) => {
         {product.description}
       </p>
       <button
-        className="text-blue-600 whitespace-nowrap hover:text-blue-700 text-xs font-bold"
+        className="text-black whitespace-nowrap hover:text-blue-700 text-xs font-bold"
         onClick={() => setIsExpanded(!isExpanded)}
       >
         {isExpanded ? "show less" : "show more"}

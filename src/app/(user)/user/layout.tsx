@@ -19,7 +19,7 @@ interface RootLayoutProps {
 export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
-      <body className={`${inter.className} bg-blue-50`}>
+      <body className={`${inter.className} bg-blue-20`}>
         <ToastContainer />
         <Header />
         <main className="container">

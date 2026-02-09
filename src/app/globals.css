@@ -21,8 +21,6 @@
   min-height: 75.5vh;
 }
 
-
-
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -79,8 +77,6 @@
   }
 }
 
-
-
 @layer base {
   * {
     @apply border-border;
@@ -88,4 +84,99 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+/* From Uiverse.io by Cornerstone-04 */
+.box,
+.box-bg {
+  transition: 0.2s ease-in-out;
+  position: relative;
+  min-width: 100px;
+  z-index: 1;
+  display: inline-block;
+  overflow: hidden;
+  padding: 10px 15px;
+  text-align: center;
+  margin: 0 5px;
+  background: transparent;
+  text-transform: uppercase;
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  border: none;
+  background: transparent;
+}
+
+.box:before,
+.box:after {
+  position: absolute;
+  content: "";
+  left: 0;
+  bottom: 0;
+  height: 2px;
+  width: 100%;
+
+  box-sizing: border-box;
+}
+.box:before {
+  border-bottom: 2px solid transparent;
+  border-left: 2px solid transparent;
+  transform: translateX(100%);
+}
+.box:after {
+  border-top: 2px solid transparent;
+  border-right: 2px solid transparent;
+  transform: translateX(-100%);
+}
+
+.box:hover:before,
+.box:hover:after {
+  border-color: #000;
+  height: 100%;
+  transform: translateX(0);
+  transition:
+    0.3s transform linear,
+    0.3s height linear 0.3s;
+}
+.box-bg {
+  border: 2px solid black;
+}
+.box-bg::after,
+.box-bg::before {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 100%;
+  transform: skew(90deg) translate(-50%, -50%);
+  position: absolute;
+  inset: 50%;
+  z-index: -1;
+  transition: 0.5s all ease-in-out;
+  background-color: black;
+}
+.box-bg::after {
+  left: 25%;
+}
+
+.box-bg::before {
+  top: -50%;
+  left: -25%;
+  transform: skew(90deg) rotate(180deg) translate(-50%, -50%);
+}
+
+.box-bg:hover::before {
+  transform: skew(45deg) rotate(180deg) translate(-50%, -50%);
+}
+
+.box-bg:hover::after {
+  transform: skew(45deg) translate(-50%, -50%);
+}
+
+.box-bg:hover {
+  color: white;
+}
+
+.box-bg:active {
+  filter: brightness(0.7);
+  transform: scale(0.95);
 }

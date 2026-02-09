@@ -18,7 +18,7 @@ export default function NotFound() {
           onClick={() => {
             router.back();
           }}
-          className="px-8 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 transition-colors inline-block"
+          className=" box box-bg"
         >
           Return Home
         </button>

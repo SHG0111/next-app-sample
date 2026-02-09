@@ -1,9 +1,11 @@
 "use client";
+import { useRouter } from "next/navigation";
 import React from "react";
 import { toast } from "react-toastify";
 const Login = () => {
   const [email, setEmail] = React.useState("");
   const [password, setPassword] = React.useState("");
+  const router = useRouter();
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     email.length === 0 &&
@@ -28,6 +30,8 @@ const Login = () => {
     }
     if (!/[!@#$%^&*]/.test(password)) {
       toast.error("One special character (!@#$%^&*)");
+    } else {
+      router.push("/user");
     }
   };
   return (
@@ -38,7 +42,7 @@ const Login = () => {
             <input
               type="email"
               placeholder="123@example.com"
-              className="p-3 w-full my-5 bg-blue-50"
+              className="p-3 w-full my-5 bg-blue-20"
               name="email"
               value={email}
               onChange={(e) => {
@@ -48,17 +52,14 @@ const Login = () => {
             <input
               type="password"
               placeholder="password"
-              className="p-3 w-full my-5 bg-blue-50"
+              className="p-3 w-full my-5 bg-blue-20"
               name="password"
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value);
               }}
             />
-            <button
-              type="submit"
-              className="px-4 py-2 my-5 bg-blue-600 hover:bg-blue-800 text-white "
-            >
+            <button type="submit" className=" box-bg">
               Login
             </button>
           </div>
