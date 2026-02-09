@@ -4,28 +4,36 @@ import styles from "@/app/products/card.module.css";
 import Image from "next/image";
 import Link from "next/link";
 import { fromUrlFormat, toUrlFormat } from "../lib/urlFormatter";
+import { Badge } from "@/components/ui/badge";
+import { CircleDollarSign, DollarSign } from "lucide-react";
+import { useImageColor } from "@/lib/utils";
 const Product = ({ item }: { item: ProductType }) => {
+  const backgroundColor = useImageColor(item.image);
+
   return (
     <>
       <div className={`${styles.card} col-span-1`}>
-        <Image
-          src={`${item.image}`}
-          alt={item.title}
-          loading="lazy"
-          width="80"
-          height="80"
-          priority={false}
-          quality={10}
-          className={`${styles.image}  object-contain place-self-center`}
-        />
-        <div
-          className={`${styles.title} line-clamp-2 underline decoration-wavy decoration-cyan-400 hover:text-cyan-400 hover:no-underline  transition-all`}
-        >
-          <Link href={`/products/${toUrlFormat(item.category)}/${item.id}`}>
+        <Link href={`/products/${toUrlFormat(item.category)}/${item.id}`}>
+          <div
+            className={`${styles.imageContainer}`}
+            style={{ backgroundColor }}
+          >
+            <Image
+              src={`${item.image}`}
+              alt={item.title}
+              loading="lazy"
+              width="80"
+              height="80"
+              priority={false}
+              quality={10}
+              className={`${styles.image}  object-contain place-self-center`}
+            />
+          </div>
+          <div className={`${styles.title} line-clamp-2 mt-1 `}>
             {item.title}
-          </Link>
-        </div>
-        <Link
+          </div>
+        </Link>
+        {/* <Link
           className={`${styles.category}  `}
           href={`/products/${toUrlFormat(item.category)}`}
         >
@@ -44,11 +52,16 @@ const Product = ({ item }: { item: ProductType }) => {
           >
             {item.category}
           </span>
-        </Link>
-        <div className={`${styles.description} line-clamp-2`}>
+        </Link> */}
+        {/* <div className={`${styles.description} line-clamp-2`}>
           {item.description}
-        </div>
-        <div className={`${styles.price} `}>{item.price}</div>
+        </div> */}
+        <Badge
+          variant={"outline"}
+          className="rounded-full text-green-600 border-green-600 py-0"
+        >
+          {item.price} <span className="ml-1">$</span>
+        </Badge>
       </div>
     </>
   );
