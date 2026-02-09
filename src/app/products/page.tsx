@@ -1,29 +1,14 @@
 "use client";
-
-import type { ProductType } from "@/types/index";
-import { useEffect, useState } from "react";
 import Product from "@/app/products/Product";
 import Error from "./error";
-import axios from "axios";
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+import useProducts from "../hooks/useProducts";
+import { useEffect } from "react";
+import CategorySlider from "@/components/categorySlider/page";
 const Productspage = () => {
-  const [post, setPost] = useState<ProductType[]>([]);
-  const [error, setError] = useState("");
-
+  const { products, error, getProducts } = useProducts();
   useEffect(() => {
-    async function getPosts() {
-      try {
-        const res = await axios.get(`${API_KEY}/products`);
-
-        const data = await res.data;
-        setPost(data);
-      } catch (error) {
-        setError(`Failed to fetch products: ${error}`);
-      } finally {
-      }
-    }
-    getPosts();
-  }, []);
+    getProducts();
+  }, [getProducts]);
   return (
     <>
       {error ? (
@@ -34,13 +19,16 @@ const Productspage = () => {
           />
         </div>
       ) : (
-        <div className="flex  justify-center  w-full">
-          <div className="grid  lg:grid-cols-4 md:grid-cols-2 grid-cols-1 mb-2  gap-4  justify-center">
-            {post.map((item) => {
-              return <Product key={item.id} item={item} />;
-            })}
+        <>
+          <div className="flex  justify-center  w-full">
+            <div className="grid  lg:grid-cols-4 md:grid-cols-2 grid-cols-1 mb-2  gap-4  justify-center">
+              {products.map((item) => {
+                return <Product key={item.id} item={item} />;
+              })}
+            </div>
           </div>
-        </div>
+          <CategorySlider />
+        </>
       )}
     </>
   );

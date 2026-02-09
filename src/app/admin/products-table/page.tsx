@@ -40,12 +40,12 @@ export default function ProductsTablePage() {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold">Manage Products</h1>
         <button
-          className="bg-black text-white px-4 py-2 flex items-center rounded hover:bg-slate-900  transition-colors"
+          className="box-bg "
           onClick={() => {
             setFormExpanded(!formExpanded);
           }}
         >
-          <AiOutlineProduct className="text-md mr-1" /> New Product
+          New Product
         </button>
       </div>
       {formExpanded && (

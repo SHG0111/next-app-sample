@@ -77,7 +77,7 @@ const ProductForm = ({
             setProductName(e.target.value);
           }}
           id="productName"
-          className="h-11 px-2 rounded-sm mt-2.5 border "
+          className="h-11 px-2  mt-2.5 border "
         />
       </div>
       {/* make this add new category and select */}
@@ -92,13 +92,13 @@ const ProductForm = ({
             onOpenChange={setIsOpen}
           >
             <SelectTrigger
-              className="w-[180px] h-11 px-2 py-1 rounded-sm"
+              className="w-[180px] h-11 px-2 py-1 rounded-none "
               id="productCategory"
             >
               <SelectValue placeholder="category" />
             </SelectTrigger>
             <SelectContent>
-              <div className="flex items-center rounded-sm  border-2 border-black">
+              <div className="flex items-center   border-2 border-black">
                 <input
                   type="text"
                   placeholder="new category"
@@ -111,7 +111,7 @@ const ProductForm = ({
                   className="py-2 px-2 text-xs focus:outline-none "
                 />
                 <button
-                  className="bg-black flex items-center py-2 px-2 text-xs text-white
+                  className="box-bg
                         "
                   onClick={(e) => {
                     e.preventDefault();
@@ -119,8 +119,7 @@ const ProductForm = ({
                     setProductCategory(productCategory.trim());
                   }}
                 >
-                  {" "}
-                  <Plus className="mr-1" /> new category
+                  add category
                 </button>
               </div>
               <SelectGroup>
@@ -142,12 +141,12 @@ const ProductForm = ({
           required
           name="productPrice"
           id="productPrice"
-          className="h-11 px-2 rounded-sm mt-2.5 border"
+          className="h-11 px-2  mt-3 border"
         />
       </div>
       <div className="flex flex-col self-start col-span-1">
         <label> image</label>
-        <div className=" px-2 border rounded-sm  mt-2.5 py-2.5  hover:bg-black hover:text-white transition-colors">
+        <div className=" px-2 border   mt-3 py-2.5  hover:bg-black hover:text-white transition-colors">
           <label
             htmlFor="productImage"
             className="flex items-center  cursor-pointer"
@@ -167,7 +166,7 @@ const ProductForm = ({
                 setProductImage(URL.createObjectURL(e.target.files[0]));
               }
             }}
-            className="h-11 px-2 py-3 rounded-sm mt-2.5"
+            className="h-11 px-2 py-3  mt-3"
           />
         </div>
       </div>
@@ -178,19 +177,16 @@ const ProductForm = ({
           required
           name="productdisc"
           id="productdisc"
-          className="h-11 px-2 py-2 rounded-sm mt-2.5 border"
+          className="h-11 px-2 py-2  mt-3 border"
           value={productdisc}
           onChange={(e) => {
             setProductdisc(e.target.value);
           }}
         />
       </div>
-      <div className="flex flex-col items-start justify-end  ">
-        <button
-          type="submit"
-          className="bg-black text-white py-2.5  justify-center flex items-center  w-full px-2 rounded hover:bg-slate-900 transition-colors"
-        >
-          <PlusIcon className="mr-1  " /> Add Product
+      <div className="flex flex-col items-start justify-end ">
+        <button type="submit" className="box-bg ">
+          Add Product
         </button>
       </div>
     </form>

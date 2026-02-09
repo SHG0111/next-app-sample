@@ -1,41 +1,18 @@
 "use client";
 
-import type { ProductType } from "@/types";
-import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import Error from "@/app/products/error";
-import axios from "axios";
-import {
-  fromUrlFormat,
-  getCategoryFromUrl,
-  toUrlFormat,
-} from "@/app/lib/urlFormatter";
+import { fromUrlFormat, toUrlFormat } from "@/app/lib/urlFormatter";
+import useProducts from "@/app/hooks/useProducts";
+import { useEffect } from "react";
 
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-
-const ProductDetail = ({
-  params,
-}: {
-  params: { id: number; category: string };
-}) => {
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(true);
-  const getProduct = async () => {
-    try {
-      const res = await axios.get(`${API_KEY}/products/${params.id}`);
-      setProduct(res.data);
-      setLoading(false);
-    } catch {
-      setError("Failed to fetch product");
-      setLoading(false);
-    }
-  };
+const ProductDetail = ({ params }: { params: { id: string[] } }) => {
+  const { product, getProduct, error, loading } = useProducts();
   useEffect(() => {
-    getProduct();
-  }, []);
-
+    const productId = parseInt(params.id[0]);
+    getProduct(productId);
+  }, [getProduct, params.id]);
   if (loading) return <div className="text-center py-10">Loading...</div>;
 
   if (error) {
@@ -63,7 +40,7 @@ const ProductDetail = ({
           />
         </div>
         <div className="flex flex-col gap-4">
-          <Link href={`/products/category/${product.category}`}>
+          <Link href={`/products/${toUrlFormat(product.category)}`}>
             <span
               className={`${
                 product.category === "electronics"

@@ -70,7 +70,7 @@ export function DataTable<TData, TValue>({
           onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
             table.getColumn("category")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm"
+          className="max-w-sm rounded-none py-5"
         />
       </div>
       <Table>
@@ -121,7 +121,7 @@ export function DataTable<TData, TValue>({
           <select
             value={table.getState().pagination.pageSize}
             onChange={(e) => table.setPageSize(Number(e.target.value))}
-            className="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="border border-black  px-3 py-2 text-sm  focus:outline-none "
           >
             {[5, 10, 15, 20, 25, 50, 100].map((size) => (
               <option key={size} value={size}>

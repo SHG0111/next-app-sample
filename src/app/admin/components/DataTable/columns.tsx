@@ -1,6 +1,6 @@
 "use client";
+const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
-import { fromUrlFormat } from "@/app/lib/urlFormatter";
 import { ProductType } from "@/types";
 import {
   Tooltip,
@@ -13,22 +13,12 @@ import { useRef, useState } from "react";
 import { GrEdit } from "react-icons/gr";
 import { RiDeleteBinLine } from "react-icons/ri";
 import { Button } from "@/components/ui/button";
-import {
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
-  Check,
-  CheckCheck,
-  Ellipsis,
-  ImageIcon,
-} from "lucide-react";
+import { ArrowDown, ArrowUp, Check, Ellipsis, ImageIcon } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -37,19 +27,17 @@ import {
   AlertDialogCancel,
   AlertDialogContent,
   AlertDialogDescription,
-  AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import useProducts from "@/app/hooks/useProducts";
 import axios from "axios";
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 const DescriptionCell = ({ product }: { product: ProductType }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
       <p className={isExpanded ? "line-clamp-none" : "line-clamp-1"}>
-        {product.description}
+        {product?.description}
       </p>
       <button
         className="text-black whitespace-nowrap hover:text-blue-700 text-xs font-bold"
@@ -60,19 +48,12 @@ const DescriptionCell = ({ product }: { product: ProductType }) => {
     </>
   );
 };
-export function deleteProduct(productId: number) {
-  try {
-    const response = axios.delete(`${API_KEY}/products/${productId}`);
-    console.log("Response:", response);
-  } catch (error) {
-    console.error("Error deleting product:", error);
-    throw error;
-  }
-}
+
 const ProductControls = ({
   product,
   onDelete,
   onUpdate,
+
   categories,
 }: {
   product: ProductType;
@@ -83,7 +64,7 @@ const ProductControls = ({
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-
+  const { deleteProduct } = useProducts();
   const handleDelete = async () => {
     setIsLoading(true);
     try {
@@ -206,24 +187,40 @@ const EditProductModal = ({
   product: ProductType;
   isOpen: boolean;
   onClose: () => void;
-  onSave: (updatedProduct: ProductType) => void;
+  onSave: (product: ProductType) => void;
+
   categories: string[];
 }) => {
-  const [formData, setFormData] = useState<ProductType>(product);
-  const [isSaving, setIsSaving] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [imagePreview, setImagePreview] = useState(product.image);
+  const [formData, setFormData] = useState<ProductType | null>(product);
+  const [isSaving, setIsSaving] = useState(false);
+  const [imagePreview, setImagePreview] = useState(product?.image);
 
+  const handleSave = async (id: number) => {
+    setIsSaving(true);
+    try {
+      const response = await axios.put(`${API_KEY}/products/${id}`, formData);
+      const updatedProduct = await response.data;
+      onSave(updatedProduct);
+      onClose();
+      return updatedProduct;
+    } catch (error) {
+      console.error("Save failed:", error);
+      alert("Failed to save changes");
+    } finally {
+      setIsSaving(false);
+    }
+  };
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >,
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "price" ? parseFloat(value) : value,
-    }));
+    setFormData((prev) => {
+      if (!prev) return null;
+      return { ...prev, [name]: name === "price" ? parseFloat(value) : value };
+    });
     if (name === "image" && e.target instanceof HTMLInputElement) {
       const file = e.target.files?.[0];
       if (file) {
@@ -231,32 +228,17 @@ const EditProductModal = ({
         reader.onloadend = () => {
           const imageData = reader.result as string;
           setImagePreview(imageData);
-          setFormData((prev) => ({
-            ...prev,
-            image: imageData,
-          }));
+          setFormData((prev) => {
+            if (!prev) return null;
+            return {
+              ...prev,
+              image: imageData,
+            };
+          });
         };
         reader.readAsDataURL(file);
       }
       return;
-    }
-  };
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      const response = await axios.put(
-        `${API_KEY}/products/${product.id}`,
-        formData,
-      );
-      const updatedProduct = await response.data;
-      onSave(updatedProduct);
-      onClose();
-    } catch (error) {
-      console.error("Save failed:", error);
-      alert("Failed to save changes");
-    } finally {
-      setIsSaving(false);
     }
   };
 
@@ -284,7 +266,7 @@ const EditProductModal = ({
             <input
               type="text"
               name="title"
-              value={formData.title}
+              value={formData?.title}
               onChange={handleChange}
               className="px-2 border rounded-sm  mt-2.5 py-2.5  w-full"
             />
@@ -294,7 +276,7 @@ const EditProductModal = ({
             <label className="block text-sm font-medium ">Category</label>
             <select
               name="category"
-              value={formData.category}
+              value={formData?.category}
               onChange={handleChange}
               className="px-2 border rounded-sm  mt-2.5 py-2.5  w-full"
             >
@@ -311,7 +293,7 @@ const EditProductModal = ({
             <input
               type="number"
               name="price"
-              value={formData.price}
+              value={formData?.price}
               onChange={handleChange}
               className="px-2 border rounded-sm  mt-2.5 py-2.5  w-full"
             />
@@ -344,7 +326,7 @@ const EditProductModal = ({
             <label className="block text-sm font-medium ">Description</label>
             <textarea
               name="description"
-              value={formData.description}
+              value={formData?.description}
               onChange={handleChange}
               className="px-2 border rounded-sm  mt-2.5 py-2.5 h-24  w-full"
             />
@@ -352,17 +334,13 @@ const EditProductModal = ({
         </div>
 
         <div className="flex gap-3 justify-end pt-4">
-          <button
-            onClick={onClose}
-            disabled={isSaving}
-            className="px-4 py-2  rounded"
-          >
+          <button onClick={onClose} disabled={isSaving} className="box">
             Cancel
           </button>
           <button
-            onClick={handleSave}
+            onClick={() => handleSave(product.id)}
             disabled={isSaving}
-            className="px-4 py-2 flex items-center bg-black text-white rounded hover:bg-gray-900"
+            className="box-bg flex items-center"
           >
             <Check className="mr-2" />
             {isSaving ? "Saving..." : "Save Changes"}

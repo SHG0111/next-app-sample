@@ -6,6 +6,7 @@ import Footer from "@/components/Footer";
 import Breadcrumb from "@/components/breadcrumb/page";
 import { ToastContainer, toast } from "react-toastify";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ProductProvider } from "./context/productContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -21,15 +22,17 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body className={`${inter.className} bg-blue-20`}>
-        <ToastContainer />
-        <Header />
-        <main className="container">
-          <div className="content pt-3  ">
-            <Breadcrumb />
-            <TooltipProvider>{children}</TooltipProvider>
-          </div>
-        </main>
-        <Footer />
+        <ProductProvider>
+          <ToastContainer />
+          <Header />
+          <main className="container">
+            <div className="content pt-3  ">
+              <Breadcrumb />
+              <TooltipProvider>{children}</TooltipProvider>
+            </div>
+          </main>
+          <Footer />
+        </ProductProvider>
       </body>
     </html>
   );
