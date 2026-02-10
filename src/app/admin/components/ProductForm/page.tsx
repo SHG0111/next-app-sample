@@ -41,7 +41,6 @@ const ProductForm = ({
     };
     try {
       const response = axios.post(`${API_KEY}/products`, newProduct);
-      console.log("Success:", response);
 
       setProducts([newProduct, ...products]);
       //   setFormExpanded(false);

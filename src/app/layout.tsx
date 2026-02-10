@@ -27,7 +27,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
           <Header />
           <main className="container">
             <div className="content pt-3  ">
-              <Breadcrumb />
+              {/* <Breadcrumb /> */}
               <TooltipProvider>{children}</TooltipProvider>
             </div>
           </main>

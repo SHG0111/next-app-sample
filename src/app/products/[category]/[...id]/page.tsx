@@ -6,14 +6,18 @@ import Error from "@/app/products/error";
 import { fromUrlFormat, toUrlFormat } from "@/app/lib/urlFormatter";
 import useProducts from "@/app/hooks/useProducts";
 import { useEffect } from "react";
-
+import ProductDetailLoading from "./Loading";
+import { useImageColor } from "@/lib/utils";
+import styles from "@/app/products/card.module.css";
 const ProductDetail = ({ params }: { params: { id: string[] } }) => {
   const { product, getProduct, error, loading } = useProducts();
+  const backgroundColor = useImageColor(product?.image || "");
+
   useEffect(() => {
     const productId = parseInt(params.id[0]);
     getProduct(productId);
   }, [getProduct, params.id]);
-  if (loading) return <div className="text-center py-10">Loading...</div>;
+  if (loading) return <ProductDetailLoading />;
 
   if (error) {
     return (
@@ -28,18 +32,24 @@ const ProductDetail = ({ params }: { params: { id: string[] } }) => {
     return <div className="text-center py-10">Product not found</div>;
 
   return (
-    <div className="max-w-6xl mx-auto my-auto h-96 p-6 bg-white rounded-lg ">
-      <div className="grid md:grid-cols-2 gap-8">
-        <div className="relative  h-full w-full">
-          <Image
-            src={product.image}
-            alt={product.title}
-            fill
-            className="object-contain drop-shadow-xl "
-            priority
-          />
+    <div className="w-11/12 mx-auto my-auto h-full  mt-10  ">
+      <div className="grid md:grid-cols-2 gap-8 ">
+        <div className="relative  min-h-96 w-full  ">
+          <div
+            className={`${styles.imageContainer} min-h-96 `}
+            style={{ backgroundColor }}
+          >
+            <Image
+              src={product.image}
+              alt={product.title}
+              width={100}
+              height={100}
+              priority
+              className="object-contain drop-shadow-xl p-4 w-96 h-96 "
+            />
+          </div>
         </div>
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 ">
           <Link href={`/products/${toUrlFormat(product.category)}`}>
             <span
               className={`${
@@ -59,15 +69,15 @@ const ProductDetail = ({ params }: { params: { id: string[] } }) => {
           </Link>
           <h1 className="text-2xl font-bold">{product.title}</h1>
 
-          <div className="text-xl font-bold text-gray-900">
-            ${product.price.toFixed(2)}
+          <div className="text-xl font-bold text-green-500">
+            {product.price.toFixed(2)}$
           </div>
-          {/* <div className="border-t pt-4">
+          <div className="border-t pt-4">
             <h2 className="text-lg font-semibold mb-2">Description</h2>
             <p className="text-blue-800/50 leading-relaxed">
               {product.description}
             </p>
-          </div> */}
+          </div>
           <button className="mt-0 w-full box-bg">Add to Cart</button>
         </div>
       </div>

@@ -12,10 +12,10 @@ const Product = ({ item }: { item: ProductType }) => {
 
   return (
     <>
-      <div className={`${styles.card} col-span-1`}>
+      <div className={`${styles.card} col-span-1 `}>
         <Link href={`/products/${toUrlFormat(item.category)}/${item.id}`}>
           <div
-            className={`${styles.imageContainer}`}
+            className={`${styles.imageContainer} `}
             style={{ backgroundColor }}
           >
             <Image
@@ -29,7 +29,7 @@ const Product = ({ item }: { item: ProductType }) => {
               className={`${styles.image}  object-contain place-self-center`}
             />
           </div>
-          <div className={`${styles.title} line-clamp-2 mt-1 `}>
+          <div className={`${styles.title} line-clamp-2 mt-2 `}>
             {item.title}
           </div>
         </Link>
@@ -58,7 +58,7 @@ const Product = ({ item }: { item: ProductType }) => {
         </div> */}
         <Badge
           variant={"outline"}
-          className="rounded-full text-green-600 border-green-600 py-0"
+          className="rounded-0 border-none px-0 text-sm mt-2 text-green-500 border-green-500 py-0"
         >
           {item.price} <span className="ml-1">$</span>
         </Badge>

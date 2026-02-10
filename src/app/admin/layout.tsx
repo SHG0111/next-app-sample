@@ -8,7 +8,7 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1">{children}</main>
+      <main className="flex-1 md:max-w-7xl ml-auto">{children}</main>
     </div>
   );
 }

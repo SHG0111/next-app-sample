@@ -11,7 +11,6 @@ import Link from "next/link";
 
 export function CategorySlider() {
   const { products } = useProducts();
-  console.log(products);
   const uniqueCategories = Array.from(new Set(products.map((p) => p.category)));
   return (
     <>
@@ -23,9 +22,9 @@ export function CategorySlider() {
                 key={uniqueCategories[index]}
                 className="basis-1/2  lg:basis-1/4"
               >
-                <div className="p-3 text-center">
+                <div className="py-3 text-center w-fit mx-auto relative overflow-hidden ">
                   <Link
-                    className="box-bg"
+                    className="box-bg  "
                     href={`/products/${toUrlFormat(uniqueCategories[index])}`}
                   >
                     {uniqueCategories[index]}

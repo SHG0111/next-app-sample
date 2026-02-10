@@ -4,11 +4,12 @@ import Error from "./error";
 import useProducts from "../hooks/useProducts";
 import { useEffect } from "react";
 import CategorySlider from "@/components/categorySlider/page";
+import Loading from "./loading";
 const Productspage = () => {
-  const { products, error, getProducts } = useProducts();
+  const { products, error, getProducts, loading } = useProducts();
   useEffect(() => {
     getProducts();
-  }, [getProducts]);
+  }, []);
   return (
     <>
       {error ? (
@@ -18,6 +19,8 @@ const Productspage = () => {
             reset={() => window.location.reload()}
           />
         </div>
+      ) : loading ? (
+        <Loading />
       ) : (
         <>
           <div className="flex  justify-center  w-full">

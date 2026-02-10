@@ -26,7 +26,6 @@ const Header = () => {
             className=" md:hidden "
             onClick={() => {
               setIsOpen(!isOpen);
-              console.log(isOpen);
             }}
           >
             {isOpen ? (

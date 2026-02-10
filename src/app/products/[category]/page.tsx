@@ -6,14 +6,15 @@ import { fromUrlFormat, toUrlFormat } from "@/app/lib/urlFormatter";
 import useProducts from "@/app/hooks/useProducts";
 import { useEffect } from "react";
 import CategorySlider from "@/components/categorySlider/page";
+import CategoryLoading from "./loading";
 
 const CategoryPage = ({ params }: { params: { category: string } }) => {
   const { products, getProductsByCategory, error, loading } = useProducts();
   useEffect(() => {
     getProductsByCategory(toUrlFormat(params.category));
-  }, []);
+  }, [getProductsByCategory, params.category]);
   if (loading) {
-    return <div className="text-center p-10">Loading products...</div>;
+    return <CategoryLoading />;
   }
 
   return (
