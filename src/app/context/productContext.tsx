@@ -1,5 +1,11 @@
 "use client";
-import { createContext, useState, Dispatch, SetStateAction } from "react";
+import {
+  createContext,
+  useState,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from "react";
 import { ProductType } from "@/types";
 import axios from "axios";
 import { fromUrlFormat } from "../lib/urlFormatter";
@@ -15,6 +21,7 @@ interface ProductContextType {
   getProduct: (id: number) => Promise<void>;
   product: ProductType | null;
   deleteProduct: (productId: number) => Promise<void>;
+  categories: string[];
 }
 
 const ProductContext = createContext<ProductContextType | null>(null);
@@ -86,7 +93,9 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
       throw error;
     }
   };
-
+  useEffect(() => {
+    getProducts();
+  }, []);
   return (
     <ProductContext.Provider
       value={
