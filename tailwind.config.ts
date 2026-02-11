@@ -68,37 +68,55 @@ const config: Config = {
     function ({ addUtilities }: any) {
       addUtilities({
         ".box-bg-hover-effect": {
+          transition: "all 0.2s ease-in-out",
           position: "relative",
+          minWidth: "100px",
+          zIndex: "1",
+          overflow: "hidden",
+          padding: "9px 15px",
+          textAlign: "center",
+          background: "transparent",
+          textTransform: "uppercase",
+          color: "black",
+          textDecoration: "none",
+          cursor: "pointer",
+          outline: "none",
+          border: "2px solid black",
+
           "&::before, &::after": {
-            content: '""',
-            position: "absolute",
-            top: "0",
-            left: "0",
-            width: "100%",
+            content: '""', // ← Changed from "" to '""'
+            display: "block",
             height: "100%",
+            width: "100%",
+            transform: "skew(90deg) translate(-50%, -50%)",
+            position: "absolute",
+            inset: "50%",
+            zIndex: "-1",
+            transition: "0.5s all ease-in-out",
             backgroundColor: "black",
-            transition: "all 300ms ease-in-out",
           },
           "&::before": {
-            zIndex: "-10",
-            transform: "skew(3deg) rotate(6deg) translate(-50%, -50%)",
-            inset: "0.5rem",
             top: "-50%",
             left: "-25%",
+            transform: "skew(90deg) rotate(180deg) translate(-50%, -50%)",
           },
+
           "&::after": {
-            zIndex: "-10",
-            transform: "skew(3deg) translate(-50%, -50%)",
-            inset: "0.5rem",
-            left: "-25%",
+            left: "15%",
           },
         },
-        ".box-bg-hover-effect:hover::before": {
-          // Add hover effects here if needed
+        ".box-bg-hover-effect:active": {
+          filter: "brightness(0.7)",
+          transform: "scale(0.95)",
+        },
+        // ← ADD GROUP HOVER SUPPORT HERE
+        ".group:hover .box-bg-hover-effect": {
+          color: "white",
+        },
+        ".group:hover .box-bg-hover-effect::before": {
           transform: "skew(45deg) rotate(180deg) translate(-50%, -50%)",
         },
-        ".box-bg-hover-effect:hover::after": {
-          // Add hover effects here if needed
+        ".group:hover .box-bg-hover-effect::after": {
           transform: "skew(45deg) translate(-50%, -50%)",
         },
       });

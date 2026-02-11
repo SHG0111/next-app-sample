@@ -14,7 +14,7 @@ export function CategorySlider() {
   const uniqueCategories = Array.from(new Set(products.map((p) => p.category)));
   return (
     <>
-      <div className="w-10/12 m-auto">
+      <div className="w-10/12 mx-auto my-10">
         <Carousel className="w-full ">
           <CarouselContent className="-ml-1">
             {Array.from({ length: uniqueCategories.length }).map((_, index) => (

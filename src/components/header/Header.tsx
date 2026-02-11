@@ -5,6 +5,8 @@ import Navbar from "@/components/navbar/Navbar";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
 import { useState } from "react";
 import { IoClose } from "react-icons/io5";
+import Search from "../search/SearchBar";
+import Image from "next/image";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -14,14 +16,15 @@ const Header = () => {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href={"/"}>
-            <span className="text-2xl font-bold text-gray-600">
-              shahenda galal
-            </span>
+            <Image
+              src="/logo.png"
+              alt="logo"
+              width={80}
+              height={80}
+              className="object-contain"
+            />
           </Link>
 
-          <nav className="hidden md:visible md:flex items-center space-x-8 flex-initial">
-            <Navbar />
-          </nav>
           <button
             className=" md:hidden "
             onClick={() => {
@@ -47,6 +50,10 @@ const Header = () => {
           )}
 
           <div className="hidden md:flex items-center space-x-4">
+            <Search />
+            <nav className="hidden md:visible md:flex items-center space-x-8 flex-initial">
+              <Navbar />
+            </nav>
             <button className="px-4 py-2 ghost box">
               {" "}
               <Link href="/login" className="relative z-10">
