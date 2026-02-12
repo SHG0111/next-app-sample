@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import useProducts from "./hooks/useProducts";
-import { fromUrlFormat, toUrlFormat } from "./lib/urlFormatter";
+import { fromUrlFormat, toUrlFormat } from "../utils/lib/urlFormatter";
 import Link from "next/link";
 
 export default function Home() {

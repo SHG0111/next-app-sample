@@ -1,5 +1,5 @@
 "use client";
-import { ProductType } from "@/types";
+import { ProductType } from "@/utils/lib/types";
 import { useState } from "react";
 import {
   Select,

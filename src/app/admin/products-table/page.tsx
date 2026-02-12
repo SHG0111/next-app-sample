@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 
 import { AiOutlineProduct } from "react-icons/ai";
 
-import { ProductType } from "@/types";
+import { ProductType } from "@/utils/lib/types";
 import DataTable from "../components/DataTable/page";
 import { columns } from "../components/DataTable/columns";
 import ProductForm from "../components/ProductForm/page";

@@ -1,12 +1,12 @@
 "use client";
-import type { ProductType } from "@/types";
+import type { ProductType } from "@/utils/lib/types";
 import styles from "@/app/products/card.module.css";
 import Image from "next/image";
 import Link from "next/link";
-import { fromUrlFormat, toUrlFormat } from "../lib/urlFormatter";
+import { fromUrlFormat, toUrlFormat } from "../../utils/lib/urlFormatter";
 import { Badge } from "@/components/ui/badge";
 import { CircleDollarSign, DollarSign } from "lucide-react";
-import { useImageColor } from "@/lib/utils";
+import { useImageColor } from "@/utils/lib/utils";
 import { Tooltip, TooltipTrigger } from "@radix-ui/react-tooltip";
 import { TooltipContent } from "@/components/ui/tooltip";
 const Product = ({ item }: { item: ProductType }) => {

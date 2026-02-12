@@ -1,5 +1,5 @@
 import useProducts from "@/app/hooks/useProducts";
-import { fromUrlFormat, toUrlFormat } from "@/app/lib/urlFormatter";
+import { fromUrlFormat, toUrlFormat } from "@/utils/lib/urlFormatter";
 import {
   Carousel,
   CarouselContent,

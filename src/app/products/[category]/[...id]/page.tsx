@@ -3,11 +3,11 @@
 import Image from "next/image";
 import Link from "next/link";
 import Error from "@/app/products/error";
-import { fromUrlFormat, toUrlFormat } from "@/app/lib/urlFormatter";
+import { fromUrlFormat, toUrlFormat } from "@/utils/lib/urlFormatter";
 import useProducts from "@/app/hooks/useProducts";
 import { useEffect } from "react";
 import ProductDetailLoading from "./Loading";
-import { useImageColor } from "@/lib/utils";
+import { useImageColor } from "@/utils/lib/utils";
 import styles from "@/app/products/card.module.css";
 const ProductDetail = ({ params }: { params: { id: string[] } }) => {
   const { product, getProduct, error, loading } = useProducts();

@@ -2,7 +2,7 @@
 
 import Product from "@/app/products/Product";
 import Error from "@/app/products/error";
-import { fromUrlFormat, toUrlFormat } from "@/app/lib/urlFormatter";
+import { fromUrlFormat, toUrlFormat } from "@/utils/lib/urlFormatter";
 import useProducts from "@/app/hooks/useProducts";
 import { useEffect } from "react";
 import CategorySlider from "@/components/categorySlider/page";

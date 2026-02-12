@@ -1,8 +1,10 @@
-import { ProductType } from "@/types";
-import { DCreatedProductType } from "@/types/dto";
+import { ProductType } from "@/utils/lib/types";
+import { DCreatedProductType } from "@/utils/lib/types/dto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import products from "@/data/products";
+import { prisma } from "@/utils/lib/prisma";
+import { Product } from "@/app/generated/prisma/client/client";
 
 const createProductSchema = z.object({
   title: z.string().min(2),
@@ -41,24 +43,32 @@ export const POST = async (req: NextRequest) => {
       );
     }
 
-    // 4. Construct the final object
-    const createdProduct: ProductType = {
-      ...validation.data, // Use the validated data
-      id: Math.floor(Math.random() * 1000), // Generate ID server-side
-    };
-
-    // 5. POST to External API
-    // const apiResponse = await axios.post(`${API_URL}/products`, createdProduct);
+    const createdProduct: Product = await prisma.product.create({
+      data: {
+        ...validation.data,
+      },
+    });
 
     return NextResponse.json(createdProduct, { status: 201 });
   } catch (error: any) {
-    console.error(
-      "❌ POST HANDLER CRASHED:",
-      error.response?.data || error.message,
-    );
+    console.error("❌ FULL ERROR OBJECT:");
+    console.error(error);
+    console.error("Error message:", error.message);
+    console.error("Error code:", error.code);
+    console.error("Client version:", error.clientVersion);
+
+    // Log the actual validation error details
+    if (error.meta?.cause) {
+      console.error("Cause:", error.meta.cause);
+    }
 
     return NextResponse.json(
-      { message: "Internal Server Error", details: error.message },
+      {
+        message: "Internal Server Error",
+        details: error.message,
+        code: error.code,
+        cause: error.meta?.cause,
+      },
       { status: 500 },
     );
   }

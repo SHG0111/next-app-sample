@@ -1,7 +1,7 @@
 "use client";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
-import { ProductType } from "@/types";
+import { ProductType } from "@/utils/lib/types";
 import {
   Tooltip,
   TooltipContent,

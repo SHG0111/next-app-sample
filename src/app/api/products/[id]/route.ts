@@ -1,5 +1,5 @@
 import products from "@/data/products";
-import { DUpdatedProductType } from "@/types/dto";
+import { DUpdatedProductType } from "@/utils/lib/types/dto";
 import { NextRequest, NextResponse } from "next/server";
 
 interface RouteParams {

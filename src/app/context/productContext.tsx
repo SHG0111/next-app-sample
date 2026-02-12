@@ -6,9 +6,9 @@ import {
   SetStateAction,
   useEffect,
 } from "react";
-import { ProductType } from "@/types";
+import { ProductType } from "@/utils/lib/types";
 import axios from "axios";
-import { fromUrlFormat } from "../lib/urlFormatter";
+import { fromUrlFormat } from "../../utils/lib/urlFormatter";
 
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { fromUrlFormat } from "@/app/lib/urlFormatter";
+import { fromUrlFormat } from "@/utils/lib/urlFormatter";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import styles from "@/components/breadcrumb/breadcrumb.module.css";

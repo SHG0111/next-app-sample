@@ -2,7 +2,7 @@
 import { redirect, useRouter, useSearchParams } from "next/navigation";
 import { use, useEffect, useState } from "react";
 import useProducts from "../hooks/useProducts";
-import { ProductType } from "@/types";
+import { ProductType } from "@/utils/lib/types";
 import Product from "../products/Product";
 
 const SearchResult = () => {
