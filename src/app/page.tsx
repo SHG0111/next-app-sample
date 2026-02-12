@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <>
-      <div className="px-4 grid grid-cols-2 md:grid-cols-4 gap-3 mt-2 h-96 uppercase ">
+      <div className="px-4 grid grid-cols-2 md:grid-cols-4 gap-3  h-96 uppercase ">
         {categories.map((category, index) => (
           <div key={category} className="group">
             <Link
