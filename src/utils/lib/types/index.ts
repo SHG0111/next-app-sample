@@ -8,6 +8,13 @@ export interface ProductType {
   image: string;
   id: number;
 }
+export interface User {
+  id: number;
+  username: string;
+  email: string;
+  password: string;
+}
+
 export interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];

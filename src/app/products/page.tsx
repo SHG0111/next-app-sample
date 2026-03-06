@@ -6,10 +6,10 @@ import { useEffect } from "react";
 import CategorySlider from "@/components/categorySlider/page";
 import Loading from "./loading";
 const Productspage = () => {
-  const { products, error, getProducts, loading } = useProducts();
+  const { products, error, loading, getProducts } = useProducts();
   useEffect(() => {
     getProducts();
-  }, []);
+  }, [getProducts]);
   return (
     <>
       {error ? (

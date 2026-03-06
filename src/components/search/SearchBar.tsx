@@ -5,7 +5,6 @@ import { SearchIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { GrClose } from "react-icons/gr";
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState("");

@@ -6,19 +6,20 @@ import { ProductType } from "@/utils/lib/types";
 import Product from "../products/Product";
 
 const SearchResult = () => {
-  const { products } = useProducts();
+  const { products, getProducts } = useProducts();
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
   const router = useRouter();
   const [result, setResult] = useState<ProductType[]>([]);
   useEffect(() => {
+    getProducts();
     if (query) {
       const filtered = products.filter((product) =>
         product.title.toLowerCase().includes(query.toLowerCase()),
       );
       setResult(filtered);
     }
-  }, [query, products]);
+  }, [query, products, getProducts]);
   return (
     <>
       <div className="flex  justify-center  w-full">

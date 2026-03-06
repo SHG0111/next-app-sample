@@ -1,39 +1,20 @@
 "use client";
 import React from "react";
 import { useEffect, useState } from "react";
-
-import { AiOutlineProduct } from "react-icons/ai";
-
 import { ProductType } from "@/utils/lib/types";
 import DataTable from "../components/DataTable/page";
 import { columns } from "../components/DataTable/columns";
 import ProductForm from "../components/ProductForm/page";
-import axios from "axios";
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+import useProducts from "@/app/hooks/useProducts";
+import Loading from "./loading";
 
 export default function ProductsTablePage() {
   const [formExpanded, setFormExpanded] = useState(false);
-  const [products, setProducts] = useState<ProductType[]>([]);
-  const [category, setCategory] = useState<string[]>([]);
-
-  async function getData(): Promise<ProductType[]> {
-    try {
-      const res = await axios.get(`${API_KEY}/products`);
-      const response = await res.data;
-      setProducts(response);
-      const uniqueCategories = Array.from(
-        new Set(response.map((p: ProductType) => p.category)),
-      ) as string[];
-      setCategory(uniqueCategories);
-      return response;
-    } catch (error) {
-      console.error("Error fetching products:", error);
-      throw error;
-    }
-  }
+  const { products, getProducts, categories, setProducts, loading } =
+    useProducts();
   useEffect(() => {
-    getData();
-  }, []);
+    getProducts();
+  }, [getProducts]);
 
   return (
     <div className="p-8">
@@ -50,14 +31,12 @@ export default function ProductsTablePage() {
       </div>
       {formExpanded && (
         <div className="mb-4">
-          <ProductForm
-            setProducts={setProducts}
-            products={products}
-            category={category}
-          />
+          <ProductForm />
         </div>
       )}
-
+      {/* {loading ? (
+        <Loading />
+      ) : ( */}
       <DataTable
         columns={columns(
           (id) => setProducts((prev) => prev.filter((p) => p.id !== id)),
@@ -68,10 +47,11 @@ export default function ProductsTablePage() {
                 p.id === updatedProduct.id ? updatedProduct : p,
               ),
             ),
-          category,
+          categories,
         )}
         data={products}
       />
+      {/* )} */}
     </div>
   );
 }

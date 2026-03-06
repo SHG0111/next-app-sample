@@ -36,15 +36,24 @@ const DescriptionCell = ({ product }: { product: ProductType }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
-      <p className={isExpanded ? "line-clamp-none" : "line-clamp-1"}>
-        {product?.description}
-      </p>
-      <button
-        className="text-black whitespace-nowrap hover:text-blue-700 text-xs font-bold"
-        onClick={() => setIsExpanded(!isExpanded)}
-      >
-        {isExpanded ? "show less" : "show more"}
-      </button>
+      {product.description.length > 100 ? (
+        <>
+          <p
+            className={`line-clamp-1 ${isExpanded ? "line-clamp-none" : ""} transition-all duration-300`}
+          >
+            {product?.description}
+          </p>
+          <button
+            className="text-black whitespace-nowrap mt-2 transition-colors hover:text-red-700 text-xs font-bold"
+            onClick={() => setIsExpanded(!isExpanded)}
+            aria-expanded={isExpanded}
+          >
+            {isExpanded ? "show less" : "show more"}
+          </button>
+        </>
+      ) : (
+        <p>{product?.description}</p>
+      )}
     </>
   );
 };
@@ -53,22 +62,19 @@ const ProductControls = ({
   product,
   onDelete,
   onUpdate,
-
-  categories,
 }: {
   product: ProductType;
   onDelete: (id: number) => void;
   onUpdate: (product: ProductType) => void;
-  categories: string[];
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const { deleteProduct } = useProducts();
+  const { deleteProduct, categories } = useProducts();
   const handleDelete = async () => {
     setIsLoading(true);
     try {
-      await deleteProduct(product.id);
+      await deleteProduct(product.id, product.category);
       setIsOpen(false);
       onDelete(product.id);
     } catch (error) {
@@ -192,24 +198,31 @@ const EditProductModal = ({
   categories: string[];
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [formData, setFormData] = useState<ProductType | null>(product);
+  const [formData, setFormData] = useState<
+    (ProductType & { image: File | string }) | null
+  >(product);
   const [isSaving, setIsSaving] = useState(false);
   const [imagePreview, setImagePreview] = useState(product?.image);
+  const { updateProduct } = useProducts();
 
-  const handleSave = async (id: number) => {
+  const handleSave = (id: number, category: string) => {
+    if (!formData) return;
+
+    const data = new FormData();
+    data.append("title", formData.title);
+    data.append("category", formData.category);
+    data.append("price", formData.price.toString());
+    data.append("description", formData.description);
+    data.append("image", formData.image); // ← Append File object
+    console.log("FormData to send:", {
+      title: data.get("title"),
+      image: data.get("image"),
+    });
+
+    updateProduct(id, category, data);
+    onSave(formData);
+    onClose();
     setIsSaving(true);
-    try {
-      const response = await axios.put(`${API_KEY}/products/${id}`, formData);
-      const updatedProduct = await response.data;
-      onSave(updatedProduct);
-      onClose();
-      return updatedProduct;
-    } catch (error) {
-      console.error("Save failed:", error);
-      alert("Failed to save changes");
-    } finally {
-      setIsSaving(false);
-    }
   };
   const handleChange = (
     e: React.ChangeEvent<
@@ -217,31 +230,39 @@ const EditProductModal = ({
     >,
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => {
-      if (!prev) return null;
-      return { ...prev, [name]: name === "price" ? parseFloat(value) : value };
-    });
+
+    // Handle file input separately
     if (name === "image" && e.target instanceof HTMLInputElement) {
       const file = e.target.files?.[0];
+
+      console.log("Selected file:", file);
+
       if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-          const imageData = reader.result as string;
-          setImagePreview(imageData);
-          setFormData((prev) => {
-            if (!prev) return null;
-            return {
-              ...prev,
-              image: imageData,
-            };
-          });
-        };
-        reader.readAsDataURL(file);
+        // Store the File object, not the blob URL
+        setFormData((prev) => {
+          if (!prev) return null;
+          return {
+            ...prev,
+            image: file, // ← Store File object, not URL
+          } as ProductType & { image: File | string };
+        });
+
+        // Create preview separately
+        const imageData = URL.createObjectURL(file);
+        setImagePreview(imageData);
       }
       return;
     }
-  };
 
+    // Handle other inputs
+    setFormData((prev) => {
+      if (!prev) return null;
+      return {
+        ...prev,
+        [name]: name === "price" ? parseFloat(value) : value,
+      };
+    });
+  };
   if (!isOpen) return null;
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -338,7 +359,7 @@ const EditProductModal = ({
             Cancel
           </button>
           <button
-            onClick={() => handleSave(product.id)}
+            onClick={() => handleSave(product.id, product.category)}
             disabled={isSaving}
             className="box-bg flex items-center"
           >
@@ -358,12 +379,14 @@ export const columns = (
 ): ColumnDef<ProductType>[] => [
   {
     accessorKey: "id",
-    size: 50,
+    size: 30,
     header: ({ column }) => {
       return <SortingButton column={column} header="Id" />;
     },
     cell: ({ row }) => (
-      <div className="font-bold text-black">{row.getValue("id")}</div>
+      <div className="font-bold text-black text-center">
+        {row.getValue("id")}
+      </div>
     ),
   },
   {
@@ -435,7 +458,7 @@ export const columns = (
       }).format(price);
 
       return (
-        <div className="text-sm font-bold text-emerald-800 whitespace-nowrap">
+        <div className="text-sm font-bold text-emerald-400 whitespace-nowrap">
           <span className="">{formatted}</span>
         </div>
       );
@@ -457,7 +480,6 @@ export const columns = (
             product={row.original}
             onDelete={onDelete}
             onUpdate={onUpdate}
-            categories={categories}
           />
         </>
       );

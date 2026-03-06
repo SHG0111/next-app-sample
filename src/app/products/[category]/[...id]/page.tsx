@@ -9,14 +9,18 @@ import { useEffect } from "react";
 import ProductDetailLoading from "./Loading";
 import { useImageColor } from "@/utils/lib/utils";
 import styles from "@/app/products/card.module.css";
-const ProductDetail = ({ params }: { params: { id: string[] } }) => {
+const ProductDetail = ({
+  params,
+}: {
+  params: { id: string[]; category: string };
+}) => {
   const { product, getProduct, error, loading } = useProducts();
   const backgroundColor = useImageColor(product?.image || "");
 
   useEffect(() => {
     const productId = parseInt(params.id[0]);
-    getProduct(productId);
-  }, [getProduct, params.id]);
+    getProduct(productId, params.category);
+  }, [getProduct, params.id, params.category]);
   if (loading) return <ProductDetailLoading />;
 
   if (error) {

@@ -3,7 +3,7 @@ export type DCreatedProductType = {
   description: string;
   price: number;
   category: string;
-  image: string;
+  image: File;
   id: number;
 };
 export type DUpdatedProductType = {
@@ -11,5 +11,5 @@ export type DUpdatedProductType = {
   description?: string;
   price?: number;
   category?: string;
-  image?: string;
+  image?: File;
 };

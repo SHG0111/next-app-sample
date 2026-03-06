@@ -1,8 +1,6 @@
 import { PrismaClient } from "@/app/generated/prisma/client/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-console.log("DATABASE_URL:", process.env.DATABASE_URL);
-
 if (!process.env.DATABASE_URL) {
   console.error("DATABASE_URL is undefined");
   process.exit(1);

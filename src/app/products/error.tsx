@@ -10,9 +10,9 @@ export default function Error({
   error: Error & { digest?: string };
   reset: () => void;
 }) {
-  useEffect(() => {
-    console.error(error);
-  }, [error]);
+  // useEffect(() => {
+  //   console.error(error);
+  // }, [error]);
   const router = useRouter();
   return (
     <div className="flex flex-col items-center justify-center min-h-[400px] p-4 text-center">

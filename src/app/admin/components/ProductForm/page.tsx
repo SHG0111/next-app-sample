@@ -11,47 +11,46 @@ import {
 } from "@/components/ui/select";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { ImageIcon, Plus, PlusIcon } from "lucide-react";
-import axios from "axios";
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
-const ProductForm = ({
-  category,
-  products,
-  setProducts,
-}: {
-  category: string[];
-  products: ProductType[];
-  setProducts: React.Dispatch<React.SetStateAction<ProductType[]>>;
-}) => {
+import { useProducts } from "@/app/hooks/useProducts";
+const ProductForm = () => {
   const [productName, setProductName] = useState("");
-  const [productImage, setProductImage] = useState("");
+  const [productImage, setProductImage] = useState<File | null>(null);
   const [productCategory, setProductCategory] = useState("");
   const [productPrice, setProductPrice] = useState(0);
   const [productdisc, setProductdisc] = useState("");
   const [isOpen, setIsOpen] = useState(false);
-  // const [products, setProducts] = useState<ProductType[]>([]);
+  const { categories, addProduct, products } = useProducts();
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const handleAddForm = (e: React.FormEvent) => {
+    e.preventDefault();
 
-  const handleAddForm = () => {
-    const newProduct: ProductType = {
-      id: products.length + 1,
-      title: productName,
-      description: productdisc,
-      image: productImage,
-      price: productPrice,
-      category: productCategory,
-    };
-    try {
-      const response = axios.post(`${API_KEY}/products`, newProduct);
-
-      setProducts([newProduct, ...products]);
-      //   setFormExpanded(false);
-      setProductName("");
-      setProductCategory("");
-      setProductPrice(0);
-      setProductdisc("");
-      setProductImage("");
-    } catch (error) {
-      console.error("Error:", error);
+    if (!productImage) {
+      alert("Please select an image");
+      return;
     }
+    console.log("Image file before send:", productImage); // ← Debug this
+    const productFormData = new FormData();
+    productFormData.append("title", productName);
+    productFormData.append("description", productdisc);
+    productFormData.append("price", productPrice.toString());
+    productFormData.append("category", productCategory);
+    productFormData.append("image", productImage); // ← Make sure this is a File object
+
+    // const newProduct: ProductType = {
+    //   id: products.length + 1,
+    //   title: productName,
+    //   description: productdisc,
+    //   image: imagePreview || "",
+    //   price: productPrice,
+    //   category: productCategory,
+    // };
+    addProduct(productFormData);
+    setProductName("");
+    setProductCategory("");
+    setProductPrice(0);
+    setProductdisc("");
+    setProductImage(null);
+    setImagePreview(null);
   };
   return (
     <form
@@ -60,7 +59,7 @@ const ProductForm = ({
       action={""}
       onSubmit={(e) => {
         e.preventDefault();
-        handleAddForm();
+        handleAddForm(e);
       }}
     >
       <div className="flex flex-col self-start">
@@ -122,7 +121,7 @@ const ProductForm = ({
                 </button>
               </div>
               <SelectGroup>
-                {category.map((category) => (
+                {categories.map((category) => (
                   <SelectItem value={category} key={category}>
                     {category}
                   </SelectItem>
@@ -140,6 +139,10 @@ const ProductForm = ({
           required
           name="productPrice"
           id="productPrice"
+          value={productPrice}
+          onChange={(e) => {
+            setProductPrice(Number(e.target.value));
+          }}
           className="h-11 px-2  mt-3 border"
         />
       </div>
@@ -160,9 +163,18 @@ const ProductForm = ({
             accept="image/*"
             name="productImage"
             id="productImage"
-            onChange={(e) => {
-              if (e.target.files && e.target.files[0]) {
-                setProductImage(URL.createObjectURL(e.target.files[0]));
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+              const file = e.target.files?.[0];
+
+              console.log("Selected file:", file); // ← Debug this
+              console.log("File name:", file?.name);
+              console.log("File type:", file?.type);
+              console.log("File size:", file?.size);
+
+              if (file) {
+                setProductImage(file);
+                const preview = URL.createObjectURL(file);
+                setImagePreview(preview);
               }
             }}
             className="h-11 px-2 py-3  mt-3"
@@ -174,6 +186,7 @@ const ProductForm = ({
         <textarea
           placeholder="Enter product discription"
           required
+          minLength={10}
           name="productdisc"
           id="productdisc"
           className="h-11 px-2 py-2  mt-3 border"

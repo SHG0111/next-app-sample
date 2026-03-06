@@ -7,9 +7,11 @@ import { useState } from "react";
 import { IoClose } from "react-icons/io5";
 import Search from "../search/SearchBar";
 import Image from "next/image";
+import useAuth from "@/app/hooks/useAuth";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, user, loading } = useAuth();
 
   return (
     <header className="sticky top-0 bg-white/95 w-full backdrop-blur-sm shadow-sm z-50">
@@ -54,18 +56,34 @@ const Header = () => {
             <nav className="hidden md:visible md:flex items-center space-x-8 flex-initial">
               <Navbar />
             </nav>
-            <button className="px-4 py-2 ghost box">
-              {" "}
-              <Link href="/login" className="relative z-10">
-                Login
-              </Link>
-            </button>
-            <button className="px-4 py-2 ghost box">
-              {" "}
-              <Link href="/login" className="relative z-10">
-                register
-              </Link>
-            </button>
+            {!loading && (
+              <>
+                {!user && !isAuthenticated && (
+                  <>
+                    <button className="px-4 py-2 ghost box">
+                      {" "}
+                      <Link href="/login" className="relative z-10">
+                        Login
+                      </Link>
+                    </button>
+                    <button className="px-4 py-2 ghost box">
+                      {" "}
+                      <Link href="/register" className="relative z-10">
+                        register
+                      </Link>
+                    </button>
+                  </>
+                )}
+                {user && isAuthenticated && (
+                  <button className="px-4 py-2 ghost box">
+                    {" "}
+                    <Link href="/profile" className="relative z-10">
+                      Profile
+                    </Link>
+                  </button>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>

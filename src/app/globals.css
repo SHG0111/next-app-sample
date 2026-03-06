@@ -140,6 +140,10 @@
 .box-bg {
   border: 2px solid black;
 }
+.box-bg-inverse {
+  border-color: white;
+  background-color: white;
+}
 .box-bg::after,
 .box-bg::before {
   content: "";

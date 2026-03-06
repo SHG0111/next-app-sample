@@ -1,31 +1,36 @@
-import { ProductType } from "@/utils/lib/types";
-import { DCreatedProductType } from "@/utils/lib/types/dto";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import products from "@/data/products";
 import { prisma } from "@/utils/lib/prisma";
-import { Product } from "@/app/generated/prisma/client/client";
+import { join } from "path";
+
+import { mkdir, writeFile } from "fs/promises";
 
 const createProductSchema = z.object({
   title: z.string().min(2),
-  description: z.string(),
-  price: z.number().positive(),
+  description: z.string().min(10),
+  price: z.coerce.number().positive(),
   category: z.string(),
-  image: z.string().url(),
 });
 
 export const GET = async () => {
   try {
-    const response = products;
+    const response = await prisma.product.findMany();
 
-    return NextResponse.json(response, { status: 200 });
+    return NextResponse.json(
+      response,
+
+      {
+        status: 200,
+      },
+    );
   } catch (error: any) {
     console.error(error.message);
 
     return NextResponse.json(
       {
+        success: false,
         message: "Something went wrong getting products",
-        debug_info: error.message, // Sending this to the browser temporarily to help you see the error
+        debug_info: error.message,
       },
       { status: 500 },
     );
@@ -33,41 +38,86 @@ export const GET = async () => {
 };
 export const POST = async (req: NextRequest) => {
   try {
-    const products: DCreatedProductType = await req.json();
-    const validation = createProductSchema.safeParse(products);
+    const formData = await req.formData();
+
+    const title = formData.get("title") as string;
+    const description = formData.get("description") as string;
+    const price = parseFloat(formData.get("price") as string);
+    const category = formData.get("category") as string;
+    const imageFile = formData.get("image") as File;
+
+    console.log("Received:", {
+      title,
+      description,
+      price,
+      category,
+      fileName: imageFile?.name,
+    });
+
+    // Check image first
+    if (!imageFile) {
+      return NextResponse.json(
+        { message: "Image file is required" },
+        { status: 400 },
+      );
+    }
+
+    // Validate data
+    const validation = createProductSchema.safeParse({
+      title,
+      description,
+      price,
+      category,
+    });
+
     if (!validation.success) {
-      console.error("❌ ZOD VALIDATION FAILED:", validation.error.format());
+      console.error("❌ Validation failed:", validation.error.format());
       return NextResponse.json(
         { message: "Invalid product data", errors: validation.error.format() },
         { status: 400 },
       );
     }
 
-    const createdProduct: Product = await prisma.product.create({
+    // Convert file to buffer
+    const blob = imageFile as Blob;
+    const buffer = Buffer.from(await blob.arrayBuffer());
+
+    // Create uploads directory
+    const uploadDir = join(process.cwd(), "public/uploads");
+    await mkdir(uploadDir, { recursive: true });
+
+    // Generate unique filename
+    const ext = imageFile.name.split(".").pop() || "jpg";
+    const uniqueFilename = `${Date.now()}-${Math.random().toString(36).substring(7)}.${ext}`;
+    const filepath = join(uploadDir, uniqueFilename);
+
+    // Write file to disk
+    await writeFile(filepath, buffer);
+
+    const imageUrl = `/uploads/${uniqueFilename}`;
+
+    console.log("File saved:", imageUrl);
+
+    // Create product in database
+    const createdProduct = await prisma.product.create({
       data: {
-        ...validation.data,
+        title: validation.data.title,
+        description: validation.data.description,
+        price: validation.data.price,
+        category: validation.data.category,
+        image: imageUrl,
       },
     });
 
+    console.log("Product created:", createdProduct);
+
     return NextResponse.json(createdProduct, { status: 201 });
   } catch (error: any) {
-    console.error("❌ FULL ERROR OBJECT:");
-    console.error(error);
-    console.error("Error message:", error.message);
-    console.error("Error code:", error.code);
-    console.error("Client version:", error.clientVersion);
-
-    // Log the actual validation error details
-    if (error.meta?.cause) {
-      console.error("Cause:", error.meta.cause);
-    }
-
+    console.error("❌ Error:", error.message);
     return NextResponse.json(
       {
         message: "Internal Server Error",
         details: error.message,
-        code: error.code,
-        cause: error.meta?.cause,
       },
       { status: 500 },
     );
