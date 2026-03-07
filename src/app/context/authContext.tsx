@@ -54,7 +54,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
           isAuthenticated: true,
           user: JSON.parse(savedUser),
         }));
-        setUsers((prev) => [JSON.parse(savedUser), ...prev]);
+        // setUser((prev) => [JSON.parse(savedUser), ...prev]);
         // setUser(JSON.parse(savedUser));
         // setIsAuthenticated(true);
       } catch (err) {
@@ -141,13 +141,23 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = useCallback(async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    setState({
-      user: null,
-      isLoading: false,
-      error: null,
-      isAuthenticated: false,
-    });
+    try {
+      setState({
+        user: null,
+        isLoading: false,
+        error: null,
+        isAuthenticated: false,
+      });
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
+    } catch (err) {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: "Logout error",
+        isAuthenticated: true,
+      }));
+    }
   }, []);
   const contextValue = useMemo(
     () => ({

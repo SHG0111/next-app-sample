@@ -6,6 +6,7 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { is } from "zod/v4/locales";
 import { generateJWTToken } from "@/utils/lib/jwt";
+import { use } from "react";
 export const POST = async (req: NextRequest) => {
   try {
     const formData = await req.json();
@@ -55,6 +56,7 @@ export const POST = async (req: NextRequest) => {
     // const token = `token-${existingUser.id}`;
     const userpayload = {
       id: existingUser.id,
+      username: existingUser.username,
       isAdmin: existingUser.isAdmin,
       email: existingUser.email,
     };
