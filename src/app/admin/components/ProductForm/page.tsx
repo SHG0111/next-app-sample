@@ -54,7 +54,7 @@ const ProductForm = () => {
   };
   return (
     <form
-      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 capitalize text-sm"
+      className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-2 capitalize text-sm "
       method="POST"
       action={""}
       onSubmit={(e) => {
@@ -75,7 +75,7 @@ const ProductForm = () => {
             setProductName(e.target.value);
           }}
           id="productName"
-          className="h-11 px-2  mt-2.5 border "
+          className="h-11 px-2  mt-2.5  border-2 border-black w-full rounded-none "
         />
       </div>
       {/* make this add new category and select */}
@@ -90,7 +90,7 @@ const ProductForm = () => {
             onOpenChange={setIsOpen}
           >
             <SelectTrigger
-              className="w-[180px] h-11 px-2 py-1 rounded-none "
+              className="w-[180px] h-11 px-2 py-1 rounded-none border-2 border-black "
               id="productCategory"
             >
               <SelectValue placeholder="category" />
@@ -143,15 +143,15 @@ const ProductForm = () => {
           onChange={(e) => {
             setProductPrice(Number(e.target.value));
           }}
-          className="h-11 px-2  mt-3 border"
+          className="h-11 px-2  mt-3 border-2 border-black w-full rounded-none"
         />
       </div>
       <div className="flex flex-col self-start col-span-1">
         <label> image</label>
-        <div className=" px-2 border   mt-3 py-2.5  hover:bg-black hover:text-white transition-colors">
+        <div className=" px-2    mt-3 py-2 box-bg  border-2 border-black w-full rounded-none hover:text-white ">
           <label
             htmlFor="productImage"
-            className="flex items-center  cursor-pointer"
+            className="flex items-center  cursor-pointer "
           >
             <ImageIcon className="mr-1" />
             upload
@@ -177,7 +177,7 @@ const ProductForm = () => {
                 setImagePreview(preview);
               }
             }}
-            className="h-11 px-2 py-3  mt-3"
+            className="h-11 px-2 py-3  mt-3 "
           />
         </div>
       </div>
@@ -189,15 +189,15 @@ const ProductForm = () => {
           minLength={10}
           name="productdisc"
           id="productdisc"
-          className="h-11 px-2 py-2  mt-3 border"
+          className="h-11 px-2 py-2  mt-3 border-2 border-black w-full rounded-none"
           value={productdisc}
           onChange={(e) => {
             setProductdisc(e.target.value);
           }}
         />
       </div>
-      <div className="flex flex-col items-start justify-end ">
-        <button type="submit" className="box-bg ">
+      <div className="flex flex-col items-stretch justify-end ">
+        <button type="submit" className="box-bg h-11">
           Add Product
         </button>
       </div>

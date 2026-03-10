@@ -10,7 +10,7 @@ import { ProductType } from "@/utils/lib/types";
 import axios from "axios";
 import { fromUrlFormat, toUrlFormat } from "../../utils/lib/urlFormatter";
 import { set } from "zod";
-
+import { ca } from "zod/v4/locales";
 const API_KEY = "http://localhost:3000/api";
 
 interface ProductContextType {
@@ -31,6 +31,8 @@ interface ProductContextType {
     category: string,
     productFormData: FormData,
   ) => Promise<ProductType>;
+  DownloadProductsAsCSVFile: () => Promise<void>;
+  // addAllProducts: (products: any[]) => Promise<void>;
 }
 
 const ProductContext = createContext<ProductContextType | null>(null);
@@ -60,7 +62,19 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   }, []);
-
+  // const addAllProducts = useCallback(async (products: any[]) => {
+  //   try {
+  //     setLoading(true);
+  //     const res = await axios.post(`${API_KEY}/products`, products);
+  //     const createdProducts = res.data;
+  //     setProducts((p) => [createdProducts, ...p]);
+  //     console.log(createdProducts);
+  //     setLoading(false);
+  //     return createdProducts;
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // }, []);
   const updateProduct = useCallback(
     async (id: number, category: string, productFormData: FormData) => {
       try {
@@ -90,7 +104,26 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
     },
     [],
   );
-
+  const DownloadProductsAsCSVFile = useCallback(async () => {
+    try {
+      setLoading(true);
+      const res = await axios.get(`${API_KEY}/export/products`, {
+        responseType: "blob",
+      });
+      const url = window.URL.createObjectURL(new Blob([res.data]));
+      const link = document.createElement("a");
+      link.href = url;
+      link.setAttribute("download", "products.csv"); // ✅ Set filename
+      document.body.appendChild(link);
+      link.click(); // ✅ Trigger download
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+      setLoading(false);
+    } catch (error) {
+      setError(`Failed download csv file: ${error}`);
+      setLoading(false);
+    }
+  }, []);
   const getProducts = useCallback(async () => {
     try {
       setLoading(true);
@@ -178,6 +211,8 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
       addProduct,
       setProducts,
       updateProduct,
+      DownloadProductsAsCSVFile,
+      // addAllProducts,
     }),
     [
       products,
@@ -193,6 +228,8 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
       addProduct,
       setProducts,
       updateProduct,
+      DownloadProductsAsCSVFile,
+      // addAllProducts,
     ],
   );
 

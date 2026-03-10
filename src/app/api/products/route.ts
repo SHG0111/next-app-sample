@@ -11,6 +11,7 @@ const createProductSchema = z.object({
   price: z.coerce.number().positive(),
   category: z.string(),
 });
+import products from "@/data/products";
 
 export const GET = async () => {
   try {
@@ -36,6 +37,32 @@ export const GET = async () => {
     );
   }
 };
+// export const POST = async () => {
+//   try {
+//     const response = await prisma.product.createMany({
+//       data: products,
+//     });
+//     console.log("Products created:", response);
+//     return NextResponse.json(
+//       {
+//         success: true,
+//         message: "Products added successfully",
+//         data: response,
+//       },
+//       { status: 200 },
+//     );
+//   } catch (error: any) {
+//     console.error("Error adding products:", error.message);
+//     return NextResponse.json(
+//       {
+//         success: false,
+//         message: "Failed to add products",
+//         debug_info: error.message,
+//       },
+//       { status: 500 },
+//     );
+//   }
+// };
 export const POST = async (req: NextRequest) => {
   try {
     const formData = await req.formData();
@@ -111,7 +138,7 @@ export const POST = async (req: NextRequest) => {
 
     console.log("Product created:", createdProduct);
 
-    return NextResponse.json(createdProduct, { status: 201 });
+    return NextResponse.json(createdProduct, { status: 200 });
   } catch (error: any) {
     console.error("❌ Error:", error.message);
     return NextResponse.json(

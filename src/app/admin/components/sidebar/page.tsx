@@ -11,7 +11,7 @@ const Sidebar = () => {
   const navLinks = [
     {
       name: "Dashboard",
-      href: "/admin",
+      href: "/admin/dashboard",
       icon: <MdOutlineDashboard />,
       active: true,
     },
@@ -29,7 +29,7 @@ const Sidebar = () => {
           <a
             href={`${link.href}`}
             key={`${link.name}-${link.href}`}
-            className=" px-4 py-4 text-md flex items-center  text-white  hover:bg-blue-800 "
+            className=" px-4 py-4 mt-10 text-md flex items-center  text-white  hover:bg-white hover:text-black"
           >
             <span className="mr-2">{link.icon}</span> <span>{link.name}</span>
           </a>

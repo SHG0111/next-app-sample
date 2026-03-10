@@ -59,11 +59,11 @@ export function DataTable<TData, TValue>({
       },
     },
   });
-  const { loading } = useProducts();
+  const { loading, DownloadProductsAsCSVFile } = useProducts();
 
   return (
     <>
-      <div className="flex items-center mb-4   justify-end ">
+      <div className="flex items-center mb-4   justify-between ">
         <Input
           type="text"
           placeholder="Filter products..."
@@ -74,7 +74,14 @@ export function DataTable<TData, TValue>({
             table.getColumn("category")?.setFilterValue(event.target.value)
           }
           className="max-w-sm rounded-none py-5 border-2    border-black "
-        />
+        />{" "}
+        <button
+          className="box-bg"
+          disabled={loading}
+          onClick={DownloadProductsAsCSVFile}
+        >
+          {loading ? "Downloading..." : "Export .csv"}
+        </button>
       </div>
       <div className="overflow-hidden border-2    border-black">
         {loading ? (
@@ -151,6 +158,7 @@ export function DataTable<TData, TValue>({
               ))}
             </select>
           </div>
+          <div></div>
           <div className="flex items-center gap-3">
             <div className="text-sm text-gray-600">
               Showing{" "}

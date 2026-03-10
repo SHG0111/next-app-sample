@@ -9,10 +9,11 @@ export interface ProductType {
   id: number;
 }
 export interface User {
-  id: number;
-  username: string;
+  id?: number;
+  username?: string;
   email: string;
   password: string;
+  isAdmin?: boolean;
 }
 
 export interface DataTableProps<TData, TValue> {

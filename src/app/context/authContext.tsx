@@ -12,7 +12,7 @@ import { fromUrlFormat, toUrlFormat } from "../../utils/lib/urlFormatter";
 import { set } from "zod";
 import { User } from "@/utils/lib/types";
 import { error } from "console";
-
+import { useRouter } from "next/navigation";
 const API_KEY = "http://localhost:3000/api";
 
 interface AuthContextType {
@@ -36,7 +36,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 
 function AuthProvider({ children }: { children: React.ReactNode }) {
   const [users, setUsers] = useState<User[]>([]);
-
+  const router = useRouter();
   const [state, setState] = useState<AuthState>({
     user: null,
     isLoading: true,
@@ -54,6 +54,9 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
           isAuthenticated: true,
           user: JSON.parse(savedUser),
         }));
+        // JSON.parse(savedUser).isAdmin === true &&
+        //   router.;
+        //
         // setUser((prev) => [JSON.parse(savedUser), ...prev]);
         // setUser(JSON.parse(savedUser));
         // setIsAuthenticated(true);
@@ -67,7 +70,16 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         }));
         localStorage.removeItem("authToken");
         localStorage.removeItem("user");
+        localStorage.removeItem("new user token");
+        localStorage.removeItem("new user");
       }
+    } else {
+      setState((prev) => ({
+        ...prev,
+        isLoading: false,
+        error: "Failed to load user data",
+        isAuthenticated: false,
+      }));
     }
   }, []);
   const registerUser = useCallback(async (newuser: User) => {
@@ -99,46 +111,55 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  const login = useCallback(async (user: User) => {
-    setState((prev) => ({ ...prev, isLoading: true, error: null }));
-    try {
-      const response = await axios.post(`${API_KEY}/users/login`, user);
-      if (response.status === 200) {
-        const { token, user: loggedInUser } = response.data;
-        setState({
-          user: loggedInUser,
-          isLoading: false,
-          error: null,
-          isAuthenticated: true,
-        });
-        // setUser(loggedInUser);
-        // setIsAuthenticated(true);
-        localStorage.setItem("token", token);
-        localStorage.setItem("user", JSON.stringify(loggedInUser));
-      } else if (response.status === 400) {
+  const login = useCallback(
+    async (user: User) => {
+      setState((prev) => ({ ...prev, isLoading: true, error: null }));
+      try {
+        const response = await axios.post(`${API_KEY}/users/login`, user);
+        if (response.status === 200) {
+          const { token, user: loggedInUser } = response.data;
+          setState({
+            user: loggedInUser,
+            isLoading: false,
+            error: null,
+            isAuthenticated: true,
+          });
+
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(loggedInUser));
+          loggedInUser.isAdmin === true
+            ? router.push("/admin/dashboard")
+            : router.push("/");
+        } else if (response.status === 400) {
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+            error: "this email does not exist",
+            isAuthenticated: false,
+          }));
+        } else {
+          setState((prev) => ({
+            ...prev,
+            isLoading: false,
+            error: "Login failed",
+            isAuthenticated: false,
+          }));
+        }
+      } catch (err) {
         setState((prev) => ({
           ...prev,
           isLoading: false,
-          error: "this email does not exist",
+          error: "Login error",
           isAuthenticated: false,
         }));
-      } else {
-        setState((prev) => ({
-          ...prev,
-          isLoading: false,
-          error: "Login failed",
-          isAuthenticated: false,
-        }));
+        localStorage.removeItem("authToken");
+        localStorage.removeItem("user");
+        localStorage.removeItem("new user token");
+        localStorage.removeItem("new user");
       }
-    } catch (err) {
-      setState((prev) => ({
-        ...prev,
-        isLoading: false,
-        error: "Login error",
-        isAuthenticated: false,
-      }));
-    }
-  }, []);
+    },
+    [router],
+  );
 
   const logout = useCallback(async () => {
     try {
@@ -150,6 +171,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
       });
       localStorage.removeItem("token");
       localStorage.removeItem("user");
+      router.push("/");
     } catch (err) {
       setState((prev) => ({
         ...prev,
@@ -158,7 +180,7 @@ function AuthProvider({ children }: { children: React.ReactNode }) {
         isAuthenticated: true,
       }));
     }
-  }, []);
+  }, [router]);
   const contextValue = useMemo(
     () => ({
       user: state.user,

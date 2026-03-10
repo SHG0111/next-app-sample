@@ -36,7 +36,7 @@ import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const { isAuthenticated, user, loading, logout } = useAuth();
-
+  // console.log(isAuthenticated, user, loading);
   return (
     <header className="sticky top-0 bg-white/95 w-full backdrop-blur-sm shadow-sm z-50">
       <div className="container mx-auto px-4 py-3">
@@ -75,14 +75,16 @@ const Header = () => {
             </div>
           )}
 
-          <div className="hidden md:flex items-center space-x-4  w-full col-span-1">
+          <div className="hidden md:flex items-center space-x-4  w-full col-span-1 justify-end">
             <Search />
             <nav className="hidden md:visible md:flex items-center space-x-5 flex-initial">
               <Navbar />
             </nav>
-            {!loading && (
+            {loading === true ? (
+              ""
+            ) : (
               <>
-                {!user && !isAuthenticated && (
+                {isAuthenticated === false ? (
                   <>
                     <button className="px-4 py-2 ghost box">
                       {" "}
@@ -97,15 +99,16 @@ const Header = () => {
                       </Link>
                     </button>
                   </>
-                )}
-                {user && isAuthenticated && (
+                ) : (
                   <>
-                    <Link href="/cart" className="relative z-10">
-                      <Avatar className=" rounded-none">
-                        <ShoppingBag size={40} strokeWidth={1} />
-                        <AvatarBadge count={5} variant="error"></AvatarBadge>
-                      </Avatar>
-                    </Link>
+                    {user?.isAdmin === false && (
+                      <Link href="/cart" className="relative z-10">
+                        <Avatar className=" rounded-none">
+                          <ShoppingBag size={40} strokeWidth={1} />
+                          <AvatarBadge count={5} variant="error"></AvatarBadge>
+                        </Avatar>
+                      </Link>
+                    )}
 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
@@ -116,10 +119,10 @@ const Header = () => {
                               alt="shadcn"
                             />
                             <AvatarFallback>
-                              {user.username.charAt(0).toUpperCase()}
+                              {user?.username?.charAt(0).toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          <div>{user.username}</div>
+                          <div>{user?.username}</div>
                           <ChevronDown />{" "}
                         </Button>
                       </DropdownMenuTrigger>

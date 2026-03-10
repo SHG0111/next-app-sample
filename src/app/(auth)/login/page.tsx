@@ -1,18 +1,32 @@
 "use client";
 import useAuth from "@/app/hooks/useAuth";
 import { User } from "@/utils/lib/types";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { is } from "zod/v4/locales";
 const Login = () => {
   const router = useRouter();
-  const { login, isAuthenticated, error } = useAuth();
+  const { login, isAuthenticated, error, user } = useAuth();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
+  useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.isAdmin) {
+        router.push("/admin/dashboard");
+      } else {
+        router.push("/");
+      }
+    }
+  }, [isAuthenticated, user, router]);
+  if (isAuthenticated) {
+    return null;
+  }
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -21,8 +35,6 @@ const Login = () => {
     const user: User = {
       email: email,
       password: password,
-      username: "",
-      id: 0,
     };
     email.length === 0 &&
       password.length === 0 &&
@@ -32,14 +44,23 @@ const Login = () => {
       toast.error("please enter valid email");
     } else {
       login(user);
+      // const saveduser = JSON.parse(localStorage.getItem("user") || "{}");
+
+      // saveduser.isAdmin === true && router.push("/admin/dashboard");
       !isAuthenticated && error && toast.error(error);
-      !error && router.push("/products");
+      // !error && router.push("/products");
     }
   };
   return (
     <>
       <div className=" h-screen flex flex-col items-center justify-center text-center">
-        <h2 className="text-4xl font-black mb-8 capitalize ">welcome back</h2>
+        <h2 className="text-4xl font-light  capitalize ">welcome back</h2>
+        <div className="mb-8 mt-2">
+          Don&apos;t have account?{" "}
+          <Link href="/register" className="text-red-600">
+            Register
+          </Link>
+        </div>
         <div className="flex items-center justify-center ">
           <div className="bg-black p-8 w-96 h-96 flex  items-center justify-center">
             <form className="" onSubmit={handleSubmit} method="POST" action="">
@@ -47,7 +68,7 @@ const Login = () => {
                 <input
                   type="email"
                   placeholder="enter your email"
-                  className="p-3 w-full   bg-zinc-800 text-white capitalize"
+                  className="p-3 w-full   bg-zinc-800 text-white "
                   name="email"
                   value={formData.email}
                   onChange={(e) => {
@@ -57,7 +78,7 @@ const Login = () => {
                 <input
                   type="password"
                   placeholder="password"
-                  className="p-3 w-full my-5 bg-zinc-800 text-white capitalize"
+                  className="p-3 w-full my-5 bg-zinc-800 text-white "
                   name="password"
                   value={formData.password}
                   onChange={(e) => {

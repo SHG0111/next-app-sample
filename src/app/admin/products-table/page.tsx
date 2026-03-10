@@ -6,12 +6,10 @@ import DataTable from "../components/DataTable/page";
 import { columns } from "../components/DataTable/columns";
 import ProductForm from "../components/ProductForm/page";
 import useProducts from "@/app/hooks/useProducts";
-import Loading from "./loading";
-
 export default function ProductsTablePage() {
   const [formExpanded, setFormExpanded] = useState(false);
-  const { products, getProducts, categories, setProducts, loading } =
-    useProducts();
+  const { products, getProducts, categories, setProducts } = useProducts();
+
   useEffect(() => {
     getProducts();
   }, [getProducts]);
@@ -19,7 +17,6 @@ export default function ProductsTablePage() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Manage Products</h1>
         <button
           className="box-bg "
           onClick={() => {
@@ -30,7 +27,7 @@ export default function ProductsTablePage() {
         </button>
       </div>
       {formExpanded && (
-        <div className="mb-4">
+        <div className="mt-4 mb-10 py-5 ">
           <ProductForm />
         </div>
       )}

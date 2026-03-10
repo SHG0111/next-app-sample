@@ -1,4 +1,4 @@
-import { Product } from "@/app/generated/prisma/client/browser";
+import { Product } from "../../../../../../prisma/@/generated/prisma/client/browser";
 import { join } from "path";
 import { prisma } from "@/utils/lib/prisma";
 import { mkdir, unlink, writeFile } from "fs/promises";

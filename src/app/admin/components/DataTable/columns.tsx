@@ -36,7 +36,7 @@ const DescriptionCell = ({ product }: { product: ProductType }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   return (
     <>
-      {product.description.length > 100 ? (
+      {product.description?.length > 100 ? (
         <>
           <p
             className={`line-clamp-1 ${isExpanded ? "line-clamp-none" : ""} transition-all duration-300`}
@@ -392,18 +392,20 @@ export const columns = (
   {
     accessorKey: "image",
     header: "Image",
-    cell: ({ row }) => (
-      <div className="relative w-12 h-12">
-        <Image
-          src={row.getValue("image")}
-          alt={row.original.title}
-          fill
-          className="object-contain "
-          sizes="100px"
-          loading="lazy"
-        />
-      </div>
-    ),
+    cell: ({ row }) => {
+      return (
+        <div className="relative w-12 h-12">
+          <Image
+            src={row.getValue("image")}
+            alt={row.original.title}
+            fill
+            className="object-contain "
+            sizes="100px"
+            loading="lazy"
+          />
+        </div>
+      );
+    },
   },
   {
     accessorKey: "title",
