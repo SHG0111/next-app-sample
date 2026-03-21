@@ -9,14 +9,16 @@ import { useEffect } from "react";
 import ProductDetailLoading from "./Loading";
 import { useImageColor } from "@/utils/lib/utils";
 import styles from "@/app/products/card.module.css";
+import useCart from "@/app/hooks/useCart";
 const ProductDetail = ({
   params,
 }: {
   params: { id: string[]; category: string };
 }) => {
   const { product, getProduct, error, loading } = useProducts();
+  const { cartLoading } = useCart();
   const backgroundColor = useImageColor(product?.image || "");
-
+  const { addToCart } = useCart();
   useEffect(() => {
     const productId = parseInt(params.id[0]);
     getProduct(productId, params.category);
@@ -54,7 +56,10 @@ const ProductDetail = ({
           </div>
         </div>
         <div className="flex flex-col gap-4 ">
-          <Link href={`/products/${toUrlFormat(product.category)}`}>
+          <Link
+            href={`/products/${toUrlFormat(product.category)}`}
+            className="w-fit"
+          >
             <span
               className={`${
                 product.category === "electronics"
@@ -82,7 +87,12 @@ const ProductDetail = ({
               {product.description}
             </p>
           </div>
-          <button className="mt-0 w-full box-bg">Add to Cart</button>
+          <button
+            className="mt-0 w-full box-bg"
+            onClick={() => addToCart(product)}
+          >
+            {cartLoading ? "Adding..." : "Add to Cart"}
+          </button>
         </div>
       </div>
     </div>

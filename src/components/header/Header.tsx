@@ -32,11 +32,22 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { DropdownMenuLabel } from "@radix-ui/react-dropdown-menu";
-
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { useSearchParams } from "next/navigation";
+import { get } from "http";
+import Cart from "../cart/page";
+import useCart from "@/app/hooks/useCart";
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { isAuthenticated, user, loading, logout } = useAuth();
-  // console.log(isAuthenticated, user, loading);
+  const { isAuthenticated, loading, logout } = useAuth();
+  const user = JSON.parse(localStorage.getItem("user") as string);
+  const role = localStorage.getItem("userRole") as string;
+  const { cartCount } = useCart();
+
   return (
     <header className="sticky top-0 bg-white/95 w-full backdrop-blur-sm shadow-sm z-50">
       <div className="container mx-auto px-4 py-3">
@@ -84,7 +95,7 @@ const Header = () => {
               ""
             ) : (
               <>
-                {isAuthenticated === false ? (
+                {isAuthenticated === false || user === null ? (
                   <>
                     <button className="px-4 py-2 ghost box">
                       {" "}
@@ -101,45 +112,98 @@ const Header = () => {
                   </>
                 ) : (
                   <>
-                    {user?.isAdmin === false && (
-                      <Link href="/cart" className="relative z-10">
-                        <Avatar className=" rounded-none">
-                          <ShoppingBag size={40} strokeWidth={1} />
-                          <AvatarBadge count={5} variant="error"></AvatarBadge>
-                        </Avatar>
-                      </Link>
+                    {role === "user" && (
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <button className="ghost">
+                            <Avatar className=" rounded-none">
+                              <ShoppingBag size={35} strokeWidth={1} />
+                              {cartCount > 0 && (
+                                <AvatarBadge
+                                  count={cartCount}
+                                  variant="error"
+                                ></AvatarBadge>
+                              )}
+                            </Avatar>
+                          </button>
+                        </PopoverTrigger>
+                        <PopoverContent
+                          align="start"
+                          className="w-full border-none rounded-none bg-gray-50"
+                        >
+                          <Cart />
+                        </PopoverContent>
+                      </Popover>
                     )}
 
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <Button variant="ghost" className="rounded-full px-0">
-                          <Avatar>
+                          <Avatar className="w-8 h-8 ">
                             <AvatarImage
-                              src="https://github.com/shadcn.png"
+                              src={
+                                user?.user_metadata?.picture ||
+                                "https://github.com/shadcn.png"
+                              }
                               alt="shadcn"
                             />
                             <AvatarFallback>
-                              {user?.username?.charAt(0).toUpperCase()}
+                              {user?.user_metadata.username
+                                ?.charAt(0)
+                                .toUpperCase()}
                             </AvatarFallback>
                           </Avatar>
-                          <div>{user?.username}</div>
                           <ChevronDown />{" "}
                         </Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
-                        <DropdownMenuGroup>
-                          <DropdownMenuLabel className="px-2 py-1 capitalize font-bold"></DropdownMenuLabel>
-                          <DropdownMenuItem>
-                            <Link href="/profile">Orders</Link>
-                          </DropdownMenuItem>
-                          <DropdownMenuItem>
-                            <Link href="/profile">Account</Link>
-                          </DropdownMenuItem>
-                        </DropdownMenuGroup>
+                        <DropdownMenuLabel className=" mb-4 mt-2 px-2 flex justify-center gap-1 items-center">
+                          <Avatar className="col-span-0  w-9 h-9 self-center   ">
+                            <AvatarImage
+                              src={
+                                user?.user_metadata?.picture ||
+                                "https://github.com/shadcn.png"
+                              }
+                              alt="shadcn"
+                            />
+                            <AvatarFallback>
+                              {user?.user_metadata.username
+                                ?.charAt(0)
+                                .toUpperCase()}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="col-span-2">
+                            <div className="capitalize  truncate text-nowrap w-40">
+                              {user?.user_metadata.username ||
+                                user?.user_metadata.name}
+                            </div>
+                            <div className="text-xs opacity-50">
+                              {user?.new_email || user?.user_metadata.email}
+                            </div>
+                          </div>
+                        </DropdownMenuLabel>
+                        <DropdownMenuItem>
+                          <Link
+                            href="/orders"
+                            className="capitalize opacity-50 hover:opacity-100 transition-all duration-300"
+                          >
+                            Orders History
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                          <Link
+                            href="/account"
+                            className="capitalize opacity-50 hover:opacity-100 transition-all duration-300"
+                          >
+                            {" "}
+                            my Account
+                          </Link>
+                        </DropdownMenuItem>
+
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
                           <button
-                            className="flex items-center gap-2"
+                            className="flex items-center gap-2 capitalize opacity-50 hover:opacity-100 transition-all duration-300"
                             onClick={logout}
                           >
                             <LogOutIcon size={16} />

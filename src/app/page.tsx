@@ -30,7 +30,7 @@ export default function Home() {
         <Loading />
       ) : (
         <div className="px-4 grid grid-cols-2 md:grid-cols-4 gap-3  h-96 uppercase ">
-          {categories.map((category, index) => (
+          {categories.slice(0, 4).map((category, index) => (
             <div key={category} className="group">
               <Link
                 href={`/products/${toUrlFormat(category)}`}

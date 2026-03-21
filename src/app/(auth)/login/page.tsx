@@ -4,24 +4,26 @@ import { User } from "@/utils/lib/types";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import { GrGoogle } from "react-icons/gr";
+import { toast } from "sonner";
 import { is } from "zod/v4/locales";
 const Login = () => {
   const router = useRouter();
-  const { login, isAuthenticated, error, user } = useAuth();
+  const { login, isAuthenticated, error, user, loginWithGoogle, loading } =
+    useAuth();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
   });
   useEffect(() => {
-    if (isAuthenticated && user) {
-      if (user.isAdmin) {
-        router.push("/admin/dashboard");
-      } else {
-        router.push("/");
-      }
-    }
+    // if (isAuthenticated && user) {
+    //   if (user.isAdmin) {
+    //     router.push("/admin/dashboard");
+    //   } else {
+    //     router.push("/");
+    //   }
+    // }
   }, [isAuthenticated, user, router]);
   if (isAuthenticated) {
     return null;
@@ -43,12 +45,7 @@ const Login = () => {
     if (!regex.test(email)) {
       toast.error("please enter valid email");
     } else {
-      login(user);
-      // const saveduser = JSON.parse(localStorage.getItem("user") || "{}");
-
-      // saveduser.isAdmin === true && router.push("/admin/dashboard");
-      !isAuthenticated && error && toast.error(error);
-      // !error && router.push("/products");
+      !isAuthenticated && error ? toast.error(error) : login(user);
     }
   };
   return (
@@ -62,13 +59,13 @@ const Login = () => {
           </Link>
         </div>
         <div className="flex items-center justify-center ">
-          <div className="bg-black p-8 w-96 h-96 flex  items-center justify-center">
+          <div className="bg-sky-50 p-8 w-96 h-96 flex  items-center justify-center">
             <form className="" onSubmit={handleSubmit} method="POST" action="">
               <div className=" ">
                 <input
                   type="email"
                   placeholder="enter your email"
-                  className="p-3 w-full   bg-zinc-800 text-white "
+                  className="p-3 w-full  "
                   name="email"
                   value={formData.email}
                   onChange={(e) => {
@@ -78,7 +75,7 @@ const Login = () => {
                 <input
                   type="password"
                   placeholder="password"
-                  className="p-3 w-full my-5 bg-zinc-800 text-white "
+                  className="p-3 w-full my-5  "
                   name="password"
                   value={formData.password}
                   onChange={(e) => {
@@ -92,6 +89,35 @@ const Login = () => {
                   Login
                 </button>
               </div>
+              <div className="relative my-5">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-sky-100"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-white text-gray-300">Or</span>
+                </div>
+              </div>
+              <button
+                onClick={loginWithGoogle}
+                disabled={loading}
+                className="w-full box-bg"
+              >
+                {loading ? (
+                  "Loading..."
+                ) : (
+                  <div className="flex items-center justify-center">
+                    <GrGoogle className="mr-2" /> Continue with Google
+                  </div>
+                )}
+              </button>
+
+              {/* <Button
+                onClick={loginWithFacebook}
+                disabled={loading}
+                className="w-full"
+              >
+                {loading ? "Loading..." : "Continue with Facebook"}
+              </Button> */}
             </form>
           </div>
         </div>

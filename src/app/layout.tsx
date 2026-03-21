@@ -4,7 +4,7 @@ import "./globals.css";
 import Header from "@/components/header/Header";
 import Footer from "@/components/Footer";
 import { Providers } from "@/app/Providers";
-
+import { Toaster } from "@/components/ui/sonner";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -23,7 +23,11 @@ export default function RootLayout({ children }: RootLayoutProps) {
         <Providers>
           <Header />
           <main className="container">
-            <div className="content pt-3">{children}</div>
+            <div className="content pt-3">
+              {children}
+
+              <Toaster />
+            </div>
           </main>
           <Footer />
         </Providers>

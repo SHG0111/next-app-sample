@@ -16,7 +16,9 @@ const API_KEY = "http://localhost:3000/api";
 interface ProductContextType {
   products: ProductType[];
   getProducts: () => Promise<void>;
+  loadMoreProducts: () => Promise<void>;
   error: string;
+  hasMore: boolean;
   getProductsByCategory: (category: string) => Promise<void>;
   loading: boolean;
   getProduct: (id: number, category: string) => Promise<void>;
@@ -44,6 +46,9 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
   const [filteredProducts, setFilteredProducts] = useState<ProductType[]>([]);
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState<ProductType | null>(null);
+  const [hasMore, setHasMore] = useState(true);
+  const [page, setPage] = useState(1);
+  const [allProducts, setAllProducts] = useState<ProductType[]>([]);
   const addProduct = useCallback(async (productFormData: FormData) => {
     try {
       setLoading(true);
@@ -124,6 +129,7 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   }, []);
+  const PRODUCTS_PER_PAGE = 20;
   const getProducts = useCallback(async () => {
     try {
       setLoading(true);
@@ -135,12 +141,37 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
         new Set(data.map((p: ProductType) => p.category)),
       ) as string[];
       setCategories(uniqueCategories);
-      setProducts(data);
+      setAllProducts(data);
+      setProducts(data.slice(0, PRODUCTS_PER_PAGE));
+      setPage(1);
+      setHasMore(data.length > PRODUCTS_PER_PAGE);
     } catch (error) {
       setError(`Failed to fetch products: ${error}`);
       setLoading(false);
     }
   }, []);
+  const loadMoreProducts = useCallback(async () => {
+    if (!hasMore || loading) return;
+
+    try {
+      setLoading(true);
+      const nextPage = page + 1;
+      const startIndex = (nextPage - 1) * PRODUCTS_PER_PAGE;
+      const endIndex = startIndex + PRODUCTS_PER_PAGE;
+
+      const newProducts = allProducts.slice(0, endIndex);
+      setProducts(newProducts);
+      setPage(nextPage);
+      setHasMore(endIndex < allProducts.length);
+    } catch (error) {
+      setError(`Failed to load more products: ${error}`);
+    } finally {
+      setLoading(false);
+    }
+  }, [allProducts, page, hasMore, loading]);
+  useEffect(() => {
+    getProducts();
+  }, [getProducts]);
 
   const getProductsByCategory = useCallback(async (category: string) => {
     try {
@@ -212,6 +243,8 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
       setProducts,
       updateProduct,
       DownloadProductsAsCSVFile,
+      loadMoreProducts,
+      hasMore,
       // addAllProducts,
     }),
     [
@@ -229,6 +262,8 @@ function ProductProvider({ children }: { children: React.ReactNode }) {
       setProducts,
       updateProduct,
       DownloadProductsAsCSVFile,
+      loadMoreProducts,
+      hasMore,
       // addAllProducts,
     ],
   );

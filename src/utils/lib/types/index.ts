@@ -14,6 +14,9 @@ export interface User {
   email: string;
   password: string;
   isAdmin?: boolean;
+  phone?: number;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 export interface DataTableProps<TData, TValue> {

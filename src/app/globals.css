@@ -85,6 +85,7 @@
     @apply bg-background text-foreground;
   }
 }
+
 /* From Uiverse.io by Cornerstone-04 */
 .box,
 .box-bg {
@@ -104,6 +105,8 @@
   cursor: pointer;
   outline: none;
   border: none;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .box:before,
@@ -141,8 +144,9 @@
   border: 2px solid black;
 }
 .box-bg-inverse {
-  border-color: white;
-  background-color: white;
+  border-color: black;
+  background-color: black;
+  color: white;
 }
 .box-bg::after,
 .box-bg::before {
